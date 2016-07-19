@@ -6,14 +6,21 @@
 	<title>Firbase Admin</title>
 	<link rel="stylesheet" type="text/css" href="css/angular-resizable.css">
 	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
+	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script>
+		const electron = require('electron').remote;
+		const firebase = require("firebase");
+		const writeFile = require('write-file-atomic');
 		window.$ = window.jQuery = require('jquery');
-		var firebase = require("firebase");
 	</script>
 </head>
 <body ng-app="fba" ng-controller="mainController">
-	<div id="mainmenu"></div>
+	<div id="mainmenu">
+		<div class="icons">
+			<div class="icon" ng-click="create()"><i class="ion-ios-flame"></i></div>
+		</div>
+	</div>
 	<div id="adminmenumain" resizable r-directions="['right']">
 		<aside id="admin-menu" class="hidden-print">
 			<ul class="admin-menu-main">

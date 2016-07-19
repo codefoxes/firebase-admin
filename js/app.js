@@ -1,6 +1,16 @@
-var appBaseUrl = document.getElementsByTagName('base')[0].href;
-
 var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function($http,dataFactory,$rootScope) {
+	const userPath = electron.app.getPath('userData');
+	var val = {};
+
+	try {
+		writeFile.sync(userPath + '/fba-config.json', JSON.stringify(val, null, '\t'), {mode: parseInt('0600', 8)});
+	} catch (err) {
+		if (err.code === 'EACCES') {
+			err.message = err.message + '\nYou don\'t have access to this file.\n';
+		}
+		throw err;
+	}
+
 	var config = {
 	   apiKey: "apiKey",
 	   authDomain: "authDomain",
@@ -9,7 +19,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	var fireApp = firebase.initializeApp(config);
 })
 
-.controller('mainController', function(dataFactory,dataBin,$rootScope,$scope,$location,taxonomy) {
+.controller('mainController', function(dataFactory,dataBin,$rootScope,$scope,$location) {
 
 	$scope.result = 'Loading';
 
@@ -22,6 +32,17 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	}, function (err) {
 		$scope.result = 'The read failed: ' + err.code;
 	});
+
+	$scope.create = function(){
+		let top = electron.BrowserWindow.getFocusedWindow();
+		let child = new electron.BrowserWindow({parent: top, width: 600, height: 400})
+		child.on('closed', () => { child = null });
+		child.loadURL(`file://${__dirname}/create.html`);
+	}
+})
+
+.controller('connectionController', function($scope) {
+	//
 })
 
 .factory('dataFactory', function($http) {
