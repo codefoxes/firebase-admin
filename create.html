@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<base href="local">
+	<title>Create Connection</title>
+	<link rel="stylesheet" type="text/css" href="css/angular-resizable.css">
+	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
+	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script>
+		const electron = require('electron').remote;
+		const firebase = require("firebase");
+		const writeFile = require('write-file-atomic');
+	</script>
+</head>
+<body ng-app="fba" ng-controller="connectionController">
+	<div class="form">
+		Test Form
+	</div>
+</body>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script>
+	// You can also require other files to run in this process
+	require('./renderer.js')
+</script>
+</html>

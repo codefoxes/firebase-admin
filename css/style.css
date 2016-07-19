@@ -116,6 +116,20 @@ body, html{
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#3c474c', GradientType=0 );
 }
 
+#mainmenu .icons{
+  padding: 3px;
+}
+
+#mainmenu .icon{
+  display: inline-block;
+  font-size: 20px;
+  width: 23px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  cursor: pointer;
+}
+
 #adminmenumain{
   height: calc(100% - 30px);
   float: left;

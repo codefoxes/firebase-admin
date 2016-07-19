@@ -1,32 +1,32 @@
 {
-  "name": "electron-quick-start",
+  "name": "firebase-admin",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Firebase Management Cross Platform Application",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron/electron-quick-start.git"
+    "url": "git+https://github.com/codefoxes/firebase-admin.git"
   },
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
+    "firebase",
+    "admin",
+    "management"
   ],
-  "author": "GitHub",
+  "author": "codefoxes",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/electron/electron-quick-start/issues"
+    "url": "https://github.com/codefoxes/firebase-admin/issues"
   },
-  "homepage": "https://github.com/electron/electron-quick-start#readme",
+  "homepage": "https://github.com/codefoxes/firebase-admin#readme",
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
   },
   "dependencies": {
     "firebase": "^3.2.0",
-    "jquery": "^3.1.0"
+    "jquery": "^3.1.0",
+    "write-file-atomic": "^1.1.4"
   }
 }
