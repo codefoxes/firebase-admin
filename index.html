@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<base href="local">
+	<title>Firbase Admin</title>
+	<link rel="stylesheet" type="text/css" href="css/angular-resizable.css">
+	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script>
+		window.$ = window.jQuery = require('jquery');
+		var firebase = require("firebase");
+	</script>
+</head>
+<body ng-app="fba" ng-controller="mainController">
+	<div id="mainmenu"></div>
+	<div id="adminmenumain" resizable r-directions="['right']">
+		<aside id="admin-menu" class="hidden-print">
+			<ul class="admin-menu-main">
+				<li class="menu-item has-submenu">
+					<a href="#"><i class="ion-filing"></i><div class="menu-name">Main</div></a>
+					<ul class="sub-menu">
+						<li class="menu-item"><a href="#"><div class="menu-name">Sub</div></a></li>
+					</ul>
+				</li>
+		</aside>
+	</div>
+	<div class="admin-content clearfix">
+		<main id="main" ng-view></main>
+		<div class="overlay"><div class="loader"></div></div>
+	</div>
+</body>
+<script type="text/javascript" src="js/jquery.gritter.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-resizable.min.js"></script>
+<script type="text/javascript" src="js/json-formatter.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/routes.js"></script>
+<script>
+	// You can also require other files to run in this process
+	require('./renderer.js')
+</script>
+</html>
