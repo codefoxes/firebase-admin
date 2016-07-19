@@ -24,16 +24,6 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	});
 })
 
-.controller('pageController', function(dataFactory,$scope,$routeParams,$sce) {
-	$('.overlay').show();
-	$scope.page = {};
-	dataFactory.httpRequest('pages/'+$routeParams.page).then(function(data) {
-		$scope.page = data;
-		$scope.page.content = $sce.trustAsHtml(data.content);
-		$('.overlay').hide();
-	});
-})
-
 .factory('dataFactory', function($http) {
 	var myService = {
 		httpRequest: function(url,method,params,dataPost,upload) {
@@ -98,12 +88,6 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	}
 })
 
-.filter('htmlToText', function(){
-	return function(text){
-		return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
-	}
-})
-
 .service('dataBin', function (){
 	return {
 		getData: function (key){
@@ -114,86 +98,6 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 		},
 		delData: function(key){
 			localStorage.removeItem(key);
-		}
-	}
-})
-
-.service('anchorSmoothScroll', function(){
-	this.scrollTo = function(eID) {
-		var startY = currentYPosition();
-		var stopY = elmYPosition(eID);
-		var distance = stopY > startY ? stopY - startY : startY - stopY;
-		if (distance < 100) {
-			scrollTo(0, stopY); return;
-		}
-		var speed = Math.round(distance / 10);
-		if (speed >= 20) speed = 20;
-		var step = Math.round(distance / 25);
-		var leapY = stopY > startY ? startY + step : startY - step;
-		var timer = 0;
-		if (stopY > startY) {
-			for ( var i=startY; i<stopY; i+=step ) {
-				setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-				leapY += step; if (leapY > stopY) leapY = stopY; timer++;
-			} return;
-		}
-		for ( var i=startY; i>stopY; i-=step ) {
-			setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-			leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
-		}
-
-		function currentYPosition() {
-			if (self.pageYOffset) return self.pageYOffset;
-			if (document.documentElement && document.documentElement.scrollTop)
-				return document.documentElement.scrollTop;
-			if (document.body.scrollTop) return document.body.scrollTop;
-			return 0;
-		}
-
-		function elmYPosition(eID) {
-			var elm = document.getElementById(eID);
-			var y = elm.offsetTop;
-			var node = elm;
-			while (node.offsetParent && node.offsetParent != document.body) {
-				node = node.offsetParent;
-				y += node.offsetTop;
-			} return y;
-		}
-	};
-})
-
-.factory('taxonomy', function() {
-	return {
-		get : function(term, field) {
-			var t = null;
-			switch (term){
-				case 'category':
-				case 'categories':
-					t = {name: 'category', path: 'categories', singular: 'Category', plural: 'Categories'};
-					break;
-				case 'mtype':
-				case 'types':
-					t = {name: 'mtype', path: 'types', singular: 'Machine Type', plural: 'Machine Types'};
-					break;
-				case 'brand':
-				case 'brands':
-					t = {name: 'brand', path: 'brands', singular: 'Brand', plural: 'Brands'};
-					break;
-				case 'location':
-				case 'locations':
-					t = {name: 'location', path: 'locations', singular: 'Location', plural: 'Locations'};
-					break;
-				case 'yom':
-				case 'yoms':
-					t = {name: 'yom', path: 'yoms', singular: 'YOM', plural: 'YOMs'};
-					break;
-				case 'fleet':
-				case 'fleets':
-					t = {name: 'fleet', path: 'fleet', singular: 'Fleet', plural: 'Fleet'};
-					break;
-			}
-			if (typeof field !== 'undefined') return t[field];
-			return t;
 		}
 	}
 });

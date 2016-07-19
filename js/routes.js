@@ -4,16 +4,6 @@ fba.config(function($routeProvider,$locationProvider) {
 		templateUrl : 'templates/main.html',
 	})
 
-	.when('/profile', {
-		templateUrl : 'templates/profile.html',
-		controller  : 'profileController'
-	})
-
-	.when('/sellers', {
-		templateUrl : 'templates/sellers.html',
-		controller  : 'sellerController'
-	})
-
 	.otherwise({
 		redirectTo:'/'
 	});
