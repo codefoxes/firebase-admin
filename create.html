@@ -15,12 +15,32 @@
 	</script>
 </head>
 <body ng-app="fba" ng-controller="connectionController">
-	<div class="form">
-		Test Form
+	<div class="form create">
+		<div class="form-group">
+			<label for="key" class="columns-2 control-label">apiKey</label>
+			<div class="columns-10">
+				<input type="text" class="form-control" id="key" placeholder="apiKey" ng-model="apiKey">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="auth" class="columns-2 control-label">authDomain</label>
+			<div class="columns-10">
+				<input type="text" class="form-control" id="auth" placeholder="authDomain" ng-model="authDomain">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="db" class="columns-2 control-label">databaseURL</label>
+			<div class="columns-10">
+				<input type="text" class="form-control" id="db" placeholder="databaseURL" ng-model="databaseURL">
+			</div>
+		</div>
+		<button class="button pull-right" ng-click="save()">Create</button>
 	</div>
 </body>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-resizable.min.js"></script>
+<script type="text/javascript" src="js/json-formatter.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script>
 	// You can also require other files to run in this process

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "firebase": "^3.2.0",
+    "graceful-fs": "^4.1.4",
     "jquery": "^3.1.0",
     "write-file-atomic": "^1.1.4"
   }
