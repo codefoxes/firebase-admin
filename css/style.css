@@ -89,7 +89,7 @@
 html { font-size: 62.5%; }
 body {
 	margin: 0;
-	font-size: 1.5em;
+	font-size: 14px;
 	line-height: 1.6;
 	font-weight: 400;
 	font-family: Helvetica, Arial, sans-serif;
@@ -262,6 +262,7 @@ input[type="password"],
 textarea,
 select {
   height: 28px;
+  width: 100%;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
   color: #d4d6d7;
   background-color: #3c474c;
@@ -296,7 +297,6 @@ textarea:focus,
 select:focus {
   border: 1px solid #80cbc4;
   outline: 0; }
-label,
 legend {
   margin-bottom: .5rem;
   font-weight: 600; }
@@ -409,15 +409,15 @@ form {
   background: #FFFFFF;
   border: 1px solid #ccc;
   border-radius: 4px; }
-.u-full-width {
+.full-width {
   width: 100%;
   box-sizing: border-box; }
-.u-max-full-width {
+.max-full-width {
   max-width: 100%;
   box-sizing: border-box; }
-.u-pull-right {
+.pull-right {
   float: right; }
-.u-pull-left {
+.pull-left {
   float: left; }
 
 .list-inline > li{
@@ -446,7 +446,9 @@ hr {
 .container:after,
 .row:after,
 .clearfix:after,
-.u-cf {
+.form:after,
+.form-group:after,
+.clearfix {
   content: "";
   display: table;
   clear: both;
@@ -470,6 +472,19 @@ input[type="search"]{
 
 .output{
   margin-top: 38px;
+}
+
+.create.form{
+  padding: 20px;
+}
+
+label{
+  height: 28px;
+  padding-top: 3px;
+}
+
+.form-group{
+  margin-bottom: 10px;
 }
 
 

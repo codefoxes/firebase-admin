@@ -1,22 +1,10 @@
 var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function($http,dataFactory,$rootScope) {
 	const userPath = electron.app.getPath('userData');
-	var val = {};
+	const fs = require('graceful-fs');
+	var config = fs.readFileSync(userPath + '/fba-config.json', 'utf8');
+	config = JSON.parse(config);
 
-	try {
-		writeFile.sync(userPath + '/fba-config.json', JSON.stringify(val, null, '\t'), {mode: parseInt('0600', 8)});
-	} catch (err) {
-		if (err.code === 'EACCES') {
-			err.message = err.message + '\nYou don\'t have access to this file.\n';
-		}
-		throw err;
-	}
-
-	var config = {
-	   apiKey: "apiKey",
-	   authDomain: "authDomain",
-	   databaseURL: "databaseURL"
-	};
-	var fireApp = firebase.initializeApp(config);
+	var fireApp = firebase.initializeApp(config.connections[0]);
 })
 
 .controller('mainController', function(dataFactory,dataBin,$rootScope,$scope,$location) {
@@ -42,7 +30,31 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 })
 
 .controller('connectionController', function($scope) {
-	//
+	$scope.apiKey = '';
+	$scope.authDomain = '';
+	$scope.databaseURL = '';
+
+	$scope.save = function(){
+		const userPath = electron.app.getPath('userData');
+		let val = {
+			connections : [
+				{
+					apiKey : $scope.apiKey,
+					authDomain : $scope.authDomain,
+					databaseURL : $scope.databaseURL
+				}
+			]
+		};
+
+		try {
+			writeFile.sync(userPath + '/fba-config.json', JSON.stringify(val, null, '\t'), {mode: parseInt('0600', 8)});
+		} catch (err) {
+			if (err.code === 'EACCES') {
+				err.message = err.message + '\nYou don\'t have access to this file.\n';
+			}
+			throw err;
+		}
+	}
 })
 
 .factory('dataFactory', function($http) {
