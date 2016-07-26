@@ -35,7 +35,7 @@
 .container {
 	position: relative;
 	width: 100%;
-	max-width: 1170px;
+	max-width: 100%;
 	margin: 0 auto;
 	box-sizing: border-box;
 }
@@ -154,6 +154,32 @@ body, html{
 	min-height: calc(100% - 30px);
 	color: #434A50;
   overflow: auto;
+}
+
+.admin-menu-main{
+  padding-top: 10px;
+}
+.menu-item{
+  color: #fff;
+  font-weight: 300;
+  cursor: pointer;
+}
+.menu-item ins{
+  font-size: 14px;
+  float: left;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+}
+.menu-item i{
+  line-height: 1;
+  padding: 7px 0;
+  display: inline-block;
+}
+.menu-name{
+  padding: 7px 0;
+  line-height: 1;
 }
 
 h1, h2, h3, h4, h5, h6 {

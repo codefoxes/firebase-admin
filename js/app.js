@@ -9,13 +9,20 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 
 .controller('mainController', function(dataFactory,dataBin,$rootScope,$scope,$location) {
 
-	$scope.result = 'Loading';
+	$scope.result = 'No Data';
+	$scope.collections = [];
+	$scope.query = '';
+	let query = '';
 
 	var dbRef = firebase.database().ref('/');
+	const baseURL = dbRef.root.toString();
 
 	dbRef.on("value", function(snapshot) {
+		snapshot.forEach(function(childSnapshot) {
+			$scope.collections.push( childSnapshot.key );
+		});
 		$scope.$apply(function () {
-			$scope.result = snapshot.val();
+			$scope.collections;
 		});
 	}, function (err) {
 		$scope.result = 'The read failed: ' + err.code;
@@ -26,6 +33,16 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 		let child = new electron.BrowserWindow({parent: top, width: 600, height: 400})
 		child.on('closed', () => { child = null });
 		child.loadURL(`file://${__dirname}/create.html`);
+	}
+
+	$scope.get = function(name){
+		dbRef.child(name).on("value", function(snapshot) {
+			$scope.result = snapshot.val();
+			query = baseURL + name;
+			$('#query').val(query).trigger('input');
+		}, function (err) {
+			$scope.result = 'The read failed: ' + err.code;
+		});
 	}
 })
 
