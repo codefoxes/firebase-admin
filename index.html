@@ -24,12 +24,13 @@
 	<div id="adminmenumain" resizable r-directions="['right']">
 		<aside id="admin-menu" class="hidden-print">
 			<ul class="admin-menu-main">
-				<li class="menu-item has-submenu">
-					<a href="#"><i class="ion-filing"></i><div class="menu-name">Main</div></a>
-					<ul class="sub-menu">
-						<li class="menu-item"><a href="#"><div class="menu-name">Sub</div></a></li>
-					</ul>
+				<li class="menu-item has-submenu" ng-repeat="collection in collections track by $index">
+					<ins><i class="ion-plus"></i></ins>
+					<div class="menu-name" ng-click="get(collection)">{{collection}}</div>
 				</li>
+				<!-- <ul class="sub-menu">
+					<li class="menu-item"><a href="#"><div class="menu-name">Sub</div></a></li>
+				</ul> -->
 		</aside>
 	</div>
 	<div class="admin-content">
