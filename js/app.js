@@ -1,36 +1,46 @@
-var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function($http,dataFactory,$rootScope) {
+var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function($http,dataFactory,connection,$rootScope) {
 	const userPath = electron.app.getPath('userData');
 	const fs = require('graceful-fs');
-	var config = fs.readFileSync(userPath + '/fba-config.json', 'utf8');
-	config = JSON.parse(config);
-
-	var fireApp = firebase.initializeApp(config.connections[0]);
+	try {
+		var config = fs.readFileSync(userPath + '/fba-config.json', 'utf8');
+		config = JSON.parse(config);
+	} catch (err) {
+		config = false;
+	}
+	if (!config) {
+		connection.create();
+	} else {
+		var fireApp = firebase.initializeApp(config.connections[0]);
+	}
 })
 
 .controller('mainController', function(dataFactory,dataBin,$rootScope,$scope,$location) {
-
+	$scope.os = process.platform;
 	$scope.result = 'No Data';
 	$scope.collections = [];
 	$scope.query = '';
+	$scope.activeUrl = '';
 	let query = '';
 
 	var dbRef = firebase.database().ref('/');
 	const baseURL = dbRef.root.toString();
 
 	dbRef.on("value", function(snapshot) {
+		let tempCols = [];
 		snapshot.forEach(function(childSnapshot) {
-			$scope.collections.push( childSnapshot.key );
+			tempCols.push( childSnapshot.key );
 		});
 		$scope.$apply(function () {
-			$scope.collections;
+			$scope.collections = tempCols;
 		});
+		$('.menu-overlay').hide();
 	}, function (err) {
 		$scope.result = 'The read failed: ' + err.code;
 	});
 
 	$scope.create = function(){
 		let top = electron.BrowserWindow.getFocusedWindow();
-		let child = new electron.BrowserWindow({parent: top, width: 600, height: 400})
+		let child = new electron.BrowserWindow({parent: top, width: 600, height: 300})
 		child.on('closed', () => { child = null });
 		child.loadURL(`file://${__dirname}/create.html`);
 	}
@@ -38,11 +48,26 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	$scope.get = function(name){
 		dbRef.child(name).on("value", function(snapshot) {
 			$scope.result = snapshot.val();
-			query = baseURL + name;
+			// query = baseURL + name;
+			query = `firebase.database().ref('/').child('${name}')`;
 			$('#query').val(query).trigger('input');
+			$scope.activeUrl = name;
 		}, function (err) {
 			$scope.result = 'The read failed: ' + err.code;
 		});
+	}
+
+	$scope.run = function(){
+		query = $('#query').val();
+		try{
+			eval(query).on("value", function(snapshot) {
+				$scope.result = snapshot.val();
+			}, function (err) {
+				$scope.result = 'The read failed: ' + err.code;
+			});
+		} catch(err) {
+			$scope.result = 'Ooops.. There is an error":\n"' + err.message;
+		}
 	}
 })
 
@@ -148,6 +173,17 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 		},
 		delData: function(key){
 			localStorage.removeItem(key);
+		}
+	}
+})
+
+.service('connection', function (){
+	return {
+		create: function (){
+			let top = electron.BrowserWindow.getFocusedWindow();
+			let child = new electron.BrowserWindow({parent: top, width: 600, height: 400})
+			child.on('closed', () => { child = null });
+			child.loadURL(`file://${__dirname}/create.html`);
 		}
 	}
 });
