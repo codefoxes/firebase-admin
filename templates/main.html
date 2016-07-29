@@ -1,17 +1,9 @@
-<section class="shortlist content">
-	<div class="container">
-		<div class="row">
-			<form class="query-box">
-				<input id="query" type="search" placeholder="Query" ng-model="query">
-				<button type="submit" class="button" ng-click="run()">Run</button>
-			</form>
-		</div>
-		<div class="row output">
-			<div class="columns-12">
-				<div class="result">
-					<json-formatter open="1" json="result" class="json-formatter-dark"></json-formatter>
-				</div>
-			</div>
-		</div>
+<section class="container content">
+	<form class="query-box" resizable r-directions="['bottom']">
+		<textarea id="query" placeholder="Query" ng-model="query"></textarea>
+		<button type="submit" class="button" ng-click="run()">Run</button>
+	</form>
+	<div class="result-wrap">
+		<json-formatter open="1" json="result" class="result json-formatter-dark"></json-formatter>
 	</div>
 </section>

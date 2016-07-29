@@ -95,7 +95,7 @@ body {
 	color: var(--color-nav);
 	background-color: var(--color-bg);
 }
-body, html{
+body, html, main, section.content{
   height: 100%;
   margin: 0;
   padding: 0;
@@ -167,7 +167,7 @@ body, html{
   color: #000;
   cursor: default;
 }
-.menu-item:active{
+.menu-item.active{
   background: #649ce1;
   color: #fff;
 }
@@ -180,9 +180,18 @@ body, html{
   text-align: center;
 }
 .menu-item i{
+  font-size: 10px;
   line-height: 1;
-  padding: 7px 0;
+  margin: 7px 0;
+  padding: 2px;
   display: inline-block;
+  background: #3c474c;
+  color: #fff;
+  border-radius: 3px;
+}
+.menu-item.active i{
+  background: #fff;
+  color: #3c474c;
 }
 .menu-name{
   padding: 7px 0;
@@ -267,7 +276,6 @@ input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="button"]:focus,
 .pagination li a:hover {
-  color: #80cbc4;
   outline: 0; }
 .button.button-primary,
 button.button-primary,
@@ -303,12 +311,13 @@ select {
   height: 28px;
   width: 100%;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
-  color: #fff;
-  background-color: #3c474c;
-  border: none;
+  color: #3c474c;
+  background-color: #fff;
+  border: 1px solid #bbb;
   box-shadow: none;
   box-sizing: border-box;
   border-radius: 4px;
+  box-shadow: 15px 15px 0 transparent,-15px -15px 0 transparent,-15px 15px 0 transparent,15px -15px 0 transparent;
 }
 /* Removes awkward default styles on some inputs for iOS */
 input[type="email"],
@@ -336,8 +345,11 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-  border: none;
-  outline: 0; }
+  border-color: #6db3fd;
+  box-shadow: 3px 3px 0 #6db3fd,-3px -3px 0 #6db3fd,-3px 3px 0 #6db3fd,3px -3px 0 #6db3fd;
+  outline: none;
+  transition: box-shadow .1s;
+}
 legend {
   margin-bottom: .5rem;
   font-weight: 600; }
@@ -390,6 +402,10 @@ pre > code {
   padding: 1rem 1.5rem;
 }
 
+.result-wrap{
+  height: calc(100% - 48px);
+  padding-bottom: 10px;
+}
 .result{
   display: block;
   padding: 1rem 1.5rem;
@@ -399,7 +415,13 @@ pre > code {
   color: #80cbc4;
   border: 1px solid #3c474c;
   border-radius: 4px;
+  max-height: 100%;
   overflow: auto;
+}
+
+::-webkit-scrollbar-track {
+    background-color: red;
+    border-left: 1px solid #ccc;
 }
 
 /* Tables
@@ -495,41 +517,122 @@ hr {
   clear: both;
 }
 
+
+/* Loader
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+@-webkit-keyframes uil-ring-anim {
+  0% {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes uil-ring-anim {
+  0% {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.loader{
+  position: absolute;
+  display: block;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  bottom:0;
+  left: 0;
+  right: 0;
+  border-radius: 15px;
+  box-shadow: 0 2px 0 0 #649ce1;
+  -ms-animation: uil-ring-anim .6s linear infinite;
+  -moz-animation: uil-ring-anim .6s linear infinite;
+  -webkit-animation: uil-ring-anim .6s linear infinite;
+  -o-animation: uil-ring-anim .6s linear infinite;
+  animation: uil-ring-anim .6s linear infinite;
+  margin: auto;
+}
+
 .query-box{
   padding: 8px 8px;
-  background: var(--color-bg);
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+  margin-bottom: 0;
+  height: 48px;
+  min-height: 48px;
 }
 .query-box button{
   margin-bottom: 0;
+  vertical-align: middle;
+  height: 100%;
+  min-height: 32px;
+  max-height: 80px;
 }
 
 #query{
   width: calc(100% - 85px);
   min-height: 32px;
+  height: 100%;
   padding: 5px 10px;
   line-height: 1.6;
   font-size: 13px;
+  color: #fff;
+  background-color: #3c474c;
+  border: none;
+  outline: none;
+  vertical-align: middle;
+  resize: none;
+  box-shadow: none;
 }
 
 .output{
   margin-top: 44px;
 }
 
-.create.form{
+.create{
+  background: var(--color-menu-bg);
+}
+.create .form{
   padding: 20px;
+}
+.create .control-label {
+  font-size: 12px;
 }
 
 label{
   height: 28px;
-  padding-top: 3px;
+  padding: 4px 0px;
 }
 
 .form-group{
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.menu-overlay{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  background: #ececec;
+  z-index: 1200;
 }
 
 
