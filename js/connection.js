@@ -17,13 +17,18 @@ var fbaC = angular.module('fba-c', []).run(function($rootScope) {
 	$scope.save = function(){
 		const userPath = electron.app.getPath('userData');
 		let connection = {			
-			apiKey : $scope.apiKey,
-			authDomain : $scope.authDomain,
-			databaseURL : $scope.databaseURL
+			serviceAccount: {
+				projectId: $scope.projectID,
+				privateKey: $scope.privateKey,
+				clientEmail: $scope.clientEmail
+			},
+			databaseURL: $scope.databaseURL
 		};
-		$rootScope.config.connections.push(connection);
+		
+		$rootScope.config.connections.push(connection);		
+		console.log(connection);
 		try {
-			writeFile.sync(userPath + '/fba-config.json', JSON.stringify($rootScope.config, null, '\t'), {mode: parseInt('0600', 8)});
+			//writeFile.sync(userPath + '/fba-config.json', JSON.stringify($rootScope.config, null, '\t'), {mode: parseInt('0600', 8)});
 		} catch (err) {
 			if (err.code === 'EACCES') {
 				err.message = err.message + '\nYou don\'t have access to this file.\n';

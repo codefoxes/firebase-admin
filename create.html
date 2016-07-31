@@ -17,21 +17,27 @@
 <body ng-app="fba-c" ng-controller="connectionController" class="{{os}} create">
 	<div class="form">
 		<div class="form-group">
-			<label for="key" class="columns-2 control-label">API Key:</label>
+			<label for="projectID" class="columns-2 control-label">Project ID:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="key" placeholder="apiKey" ng-model="apiKey">
+				<input type="text" class="form-control" id="projectID" placeholder="Project ID" ng-model="projectID">
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="auth" class="columns-2 control-label">Auth Domain:</label>
+			<label for="privateKey" class="columns-2 control-label">Private Key:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="auth" placeholder="authDomain" ng-model="authDomain">
+				<input type="text" class="form-control" id="privateKey" placeholder="Eg: -----BEGIN PRIVATE KEY----- your key -----END PRIVATE KEY-----\n" ng-model="privateKey">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="clientEmail" class="columns-2 control-label">CLient Email:</label>
+			<div class="columns-10">
+				<input type="text" class="form-control" id="clientEmail" placeholder="Client Email" ng-model="clientEmail">
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="db" class="columns-2 control-label">Database URL:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="db" placeholder="databaseURL" ng-model="databaseURL">
+				<input type="text" class="form-control" id="db" placeholder="Database URL" ng-model="databaseURL">
 			</div>
 		</div>
 		<button class="button pull-right" ng-click="save()">Create</button>
