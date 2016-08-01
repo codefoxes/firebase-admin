@@ -4,7 +4,8 @@
   "description": "Firebase Management Cross Platform Application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "mocha tests"
   },
   "repository": {
     "type": "git",
@@ -22,12 +23,28 @@
   },
   "homepage": "https://github.com/codefoxes/firebase-admin#readme",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0"
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "electron-prebuilt": "^1.2.0",
+    "mocha": "^3.0.0",
+    "spectron": "^3.3.0"
   },
   "dependencies": {
     "firebase": "^3.2.0",
     "graceful-fs": "^4.1.4",
     "jquery": "^3.1.0",
     "write-file-atomic": "^1.1.4"
+  },
+  "standard": {
+    "globals": [
+      "electron",
+      "firebase",
+      "angular",
+      "$",
+      "jQuery",
+      "fba",
+      "writeFile",
+      "localStorage"
+    ]
   }
 }

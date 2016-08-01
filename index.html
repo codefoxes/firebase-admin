@@ -18,7 +18,21 @@
 <body ng-app="fba" ng-controller="mainController" class="{{os}} index">
 	<div id="mainmenu">
 		<div class="icons">
-			<div class="icon" ng-click="create()"><img class="logo" src="logo.svg"></div>
+			<div class="icon" ng-click="listShown = true;">
+				<img class="logo" src="img/logo.svg">
+				<span>&#9660;</span>
+			</div>
+			<div class="icon" ng-click="create()">
+				<img class="logo" src="img/add.svg">
+				<span>&#9660;</span>
+			</div>
+		</div>
+		<div class="connection-list" ng-show="listShown" ng-click="listShown = false;">
+			<ul>
+				<li>Server 1</li>
+				<li>Server 2</li>
+				<li>Server 3</li>
+			</ul>
 		</div>
 	</div>
 	<div id="adminmenumain" resizable r-directions="['right']">
