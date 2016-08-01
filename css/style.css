@@ -116,17 +116,57 @@ body, html, main, section.content{
 }
 
 #mainmenu .icons{
-  padding: 6px;
+  padding: 7px;
+  height: 35px;
 }
 
 #mainmenu .icon{
   display: inline-block;
-  font-size: 20px;
-  width: 23px;
-  height: 23px;
-  line-height: 23px;
+  width: 28px;
+  height: 20px;
+  line-height: 20px;
   text-align: center;
   cursor: default;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+#mainmenu .icon span{
+  font-size: 8px;
+  color: #777;
+  display: inline-block;
+  padding-top: 2px;
+  padding-left: 2px;
+  height: 20px;
+  vertical-align: top;
+}
+
+.connection-list{
+  z-index: 1900;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.connection-list ul{
+  position: absolute;
+  top: 32px;
+  left: 10px;
+  min-width: 180px;
+  background: rgba(255,255,255,0.99);
+  padding: 6px 0;
+  border-radius: 4px;
+  border: 1px solid #b8b8b8;
+  box-shadow: 2px 2px 14px rgba(0,0,0,0.5);
+}
+.connection-list ul li{
+  padding: 2px 10px;
+  cursor: default;
+}
+.connection-list li:hover{
+  background: #649ce1;
+  color: #fff;
 }
 
 .logo{
