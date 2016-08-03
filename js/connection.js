@@ -28,6 +28,7 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
     $rootScope.config.connections.push(connection)
     try {
       writeFile.sync(userPath + '/fba-config.json', JSON.stringify($rootScope.config, null, '\t'), {mode: parseInt('0600', 8)})
+      window.close()
     } catch (err) {
       if (err.code === 'EACCES') {
         err.message = err.message + '\nYou don\'t have access to this file.\n'

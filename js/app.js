@@ -1,4 +1,4 @@
-var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function ($http, dataFactory, connection, $rootScope) {
+var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function ($http, dataFactory, $rootScope) {
   const userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
   try {
@@ -8,9 +8,15 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 	  $rootScope.config = false
   }
   if (!$rootScope.config) {
-    connection.create()
+    ipc.send('open-create-window')
   } else {
-    var fireApp = firebase.initializeApp($rootScope.config.connections[0])
+    let connection = $rootScope.config.connections[0]
+    let keysplits = connection.serviceAccount.privateKey.split('\\n')
+    connection.serviceAccount.privateKey = ''
+    keysplits.forEach(function (v, k) {
+      connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
+    })
+    var fireApp = firebase.initializeApp(connection)
   }
 })
 
@@ -44,10 +50,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.create = function () {
-    let top = electron.BrowserWindow.getFocusedWindow()
-    let child = new electron.BrowserWindow({parent: top, width: 600, height: 300})
-    child.on('closed', () => { child = null })
-    child.loadURL(`file://${__dirname}/create.html`)
+    ipc.send('open-create-window')
   }
 
   $scope.get = function (name) {
@@ -178,17 +181,6 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
     },
     delData: function (key) {
       localStorage.removeItem(key)
-    }
-  }
-})
-
-.service('connection', function () {
-  return {
-    create: function () {
-      let top = electron.BrowserWindow.getFocusedWindow()
-      let child = new electron.BrowserWindow({parent: top, width: 600, height: 400})
-      child.on('closed', () => { child = null })
-      child.loadURL(`file://${__dirname}/create.html`)
     }
   }
 })
