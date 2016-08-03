@@ -3,14 +3,14 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   const fs = require('graceful-fs')
   try {
     var config = fs.readFileSync(userPath + '/fba-config.json', 'utf8')
-    config = JSON.parse(config)
+	  $rootScope.config = JSON.parse(config)
   } catch (err) {
-    config = false
+	  $rootScope.config = false
   }
-  if (!config) {
+  if (!$rootScope.config) {
     connection.create()
   } else {
-    var fireApp = firebase.initializeApp(config.connections[0])
+    var fireApp = firebase.initializeApp($rootScope.config.connections[0])
   }
 })
 
@@ -23,21 +23,25 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $scope.listShown = false
   let query = ''
 
-  var dbRef = firebase.database().ref('/')
-  const baseURL = dbRef.root.toString()
+  if ($rootScope.config) {
+    var dbRef = firebase.database().ref('/')
+    const baseURL = dbRef.root.toString()
 
-  dbRef.on('value', function (snapshot) {
-    let tempCols = []
-    snapshot.forEach(function (childSnapshot) {
-      tempCols.push(childSnapshot.key)
+    dbRef.on('value', function (snapshot) {
+      let tempCols = []
+      snapshot.forEach(function (childSnapshot) {
+        tempCols.push(childSnapshot.key)
+      })
+      $scope.$apply(function () {
+        $scope.collections = tempCols
+      })
+      $('.menu-overlay').hide()
+    }, function (err) {
+      $scope.result = 'The read failed: ' + err.code
     })
-    $scope.$apply(function () {
-      $scope.collections = tempCols
-    })
+  } else {
     $('.menu-overlay').hide()
-  }, function (err) {
-    $scope.result = 'The read failed: ' + err.code
-  })
+  }
 
   $scope.create = function () {
     let top = electron.BrowserWindow.getFocusedWindow()
