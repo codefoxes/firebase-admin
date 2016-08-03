@@ -9,10 +9,11 @@
 	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script>
-		const electron = require('electron').remote;
-		const firebase = require("firebase");
-		const writeFile = require('write-file-atomic');
-		window.$ = window.jQuery = require('jquery');
+		const electron = require('electron').remote
+		const ipc = require('electron').ipcRenderer
+		const firebase = require("firebase")
+		const writeFile = require('write-file-atomic')
+		window.$ = window.jQuery = require('jquery')
 	</script>
 </head>
 <body ng-app="fba" ng-controller="mainController" class="{{os}} index">
@@ -29,9 +30,7 @@
 		</div>
 		<div class="connection-list" ng-show="listShown" ng-click="listShown = false;">
 			<ul>
-				<li>Server 1</li>
-				<li>Server 2</li>
-				<li>Server 3</li>
+				<li ng-repeat="con in config.connections">{{con.serviceAccount.projectId}}</li>
 			</ul>
 		</div>
 	</div>

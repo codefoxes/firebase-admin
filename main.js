@@ -2,6 +2,7 @@ const electron = require('electron')
 const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
+const ipc = electron.ipcMain
 
 let template = require('./js/menu')
 if (process.mas) app.setName('Firebase Admin')
@@ -51,5 +52,9 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+ipc.on('open-create-window', function (event) {
+  let mainWin = electron.BrowserWindow.getFocusedWindow()
+  let conWin = new electron.BrowserWindow({parent: mainWin, width: 600, height: 400})
+  conWin.on('closed', () => { conWin = null })
+  conWin.loadURL(`file://${__dirname}/create.html`)
+})
