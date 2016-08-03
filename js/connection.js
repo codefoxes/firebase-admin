@@ -10,15 +10,19 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
 })
 
 .controller('connectionController', function ($scope, $rootScope) {
-  $scope.apiKey = ''
-  $scope.authDomain = ''
+  $scope.projectID = ''
+  $scope.privateKey = ''
+  $scope.clientEmail = ''
   $scope.databaseURL = ''
 
   $scope.save = function () {
     const userPath = electron.app.getPath('userData')
     let connection = {
-      apiKey: $scope.apiKey,
-      authDomain: $scope.authDomain,
+      serviceAccount: {
+        projectId: $scope.projectID,
+        privateKey: $scope.privateKey,
+        clientEmail: $scope.clientEmail
+      },
       databaseURL: $scope.databaseURL
     }
     $rootScope.config.connections.push(connection)
