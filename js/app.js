@@ -11,9 +11,9 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
     ipc.send('open-create-window')
   } else {
     let connection = $rootScope.config.connections[0]
-    let keysplits = connection.serviceAccount.privateKey.split('\\n')
+    let keySplits = connection.serviceAccount.privateKey.split('\\n')
     connection.serviceAccount.privateKey = ''
-    keysplits.forEach(function (v, k) {
+    keySplits.forEach(function (v, k) {
       connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
     })
     var fireApp = firebase.initializeApp(connection)
@@ -27,6 +27,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $scope.query = ''
   $scope.activeUrl = ''
   $scope.listShown = false
+  $scope.m = {'searchMenu': ''}
   let query = ''
 
   if ($rootScope.config) {

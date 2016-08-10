@@ -54,7 +54,7 @@ app.on('activate', function () {
 
 ipc.on('open-create-window', function (event) {
   let mainWin = electron.BrowserWindow.getFocusedWindow()
-  let conWin = new electron.BrowserWindow({parent: mainWin, width: 600, height: 400})
+  let conWin = new electron.BrowserWindow({parent: mainWin, width: 600, height: 300})
   conWin.on('closed', () => { conWin = null })
   conWin.loadURL(`file://${__dirname}/create.html`)
 })

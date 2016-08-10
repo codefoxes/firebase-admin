@@ -17,6 +17,7 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
 
   $scope.save = function () {
     const userPath = electron.app.getPath('userData')
+    let updated = false
     let connection = {
       serviceAccount: {
         projectId: $scope.projectID,
@@ -25,7 +26,16 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
       },
       databaseURL: $scope.databaseURL
     }
-    $rootScope.config.connections.push(connection)
+    for (var i = 0; i < $rootScope.config.connections.length; i++) {
+      if ($rootScope.config.connections[i].serviceAccount.projectId == $scope.projectID) {
+        $rootScope.config.connections[i] = connection
+        updated = true
+        break;
+      }
+    }
+    if (!updated) {
+      $rootScope.config.connections.push(connection)
+    }
     try {
       writeFile.sync(userPath + '/fba-config.json', JSON.stringify($rootScope.config, null, '\t'), {mode: parseInt('0600', 8)})
       window.close()
@@ -36,4 +46,6 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
       throw err
     }
   }
+
+  $scope.close = () => window.close()
 })
