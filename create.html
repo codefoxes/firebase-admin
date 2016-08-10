@@ -8,41 +8,46 @@
 	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
 	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script>
-		const electron = require('electron').remote
-		const firebase = require("firebase")
-		const writeFile = require('write-file-atomic')
-	</script>
 </head>
 <body ng-app="fba-c" ng-controller="connectionController" class="{{os}} create">
-	<div class="form">
+	<form class="form" ng-submit="save()" name="add">
 		<div class="form-group">
 			<label for="projectID" class="columns-2 control-label">Project ID:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="projectID" placeholder="Project ID" ng-model="projectID">
+				<input type="text" class="form-control" id="projectID" placeholder="Project ID" ng-model="projectID" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="privateKey" class="columns-2 control-label">Private Key:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="privateKey" placeholder="-----BEGIN PRIVATE KEY----- your key -----END PRIVATE KEY-----\n" ng-model="privateKey">
+				<input type="text" class="form-control" id="privateKey" placeholder="-----BEGIN PRIVATE KEY----- your key -----END PRIVATE KEY-----\n" ng-model="privateKey" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="clientEmail" class="columns-2 control-label">Client Email:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="clientEmail" placeholder="Client Email" ng-model="clientEmail">
+				<input type="text" class="form-control" id="clientEmail" placeholder="Client Email" ng-model="clientEmail" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="db" class="columns-2 control-label">Database URL:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="db" placeholder="Database URL" ng-model="databaseURL">
+				<input type="text" class="form-control" id="db" placeholder="Database URL" ng-model="databaseURL" required>
 			</div>
 		</div>
-		<button class="button pull-right" ng-click="save()">Create</button>
-	</div>
+		<footer class="toolbar toolbar-footer">
+			<div class="toolbar-actions">
+				<button class="button button-primary pull-right" ng-disabled="add.$invalid">Create</button>
+				<button class="button button-light" ng-click="close()">Cancel</button>
+			</div>
+		</footer>
+	</form>
 </body>
+<script>
+	const electron = require('electron').remote
+	const firebase = require("firebase")
+	const writeFile = require('write-file-atomic')
+</script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/connection.js"></script>
 <script>
