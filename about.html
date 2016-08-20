@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>About Firebase Admin</title>
+	<style>
+		html, body{
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			-webkit-app-region: drag;
+			font-family: system,-apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,"Segoe UI",sans-serif;
+			padding-top: 50px;
+			text-align: center;
+			background: #6ea75d;
+			color: #fff;
+			box-sizing: border-box;
+			animation: color-anim 30s ease infinite;
+		}
+		.logo{
+			width: 50px;
+		}
+		.detail{
+			font-size: 12px;
+			padding-top: 8px;
+			line-height: 2;
+		}
+		.footer {
+			position: fixed;
+			bottom: 0;
+			font-size: 12px;
+			width: 100%;
+			padding-bottom: 10px;
+			color: rgba(0, 0, 0, 0.6);
+		}
+		@-webkit-keyframes color-anim {
+			0% { background: #3a8cc0; }
+			20% { background: #c5a853; }
+			40% { background: #3dad6c; }
+			60% { background: #6b4ebc; }
+			80% { background: #d85c5c; }
+			100% { background: #3a8cc0; }
+		}
+		.close{
+			background-color: #ff6159;
+			border-radius: 100%;
+			padding: 0;
+			height: 12px;
+			width: 12px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-sizing: border-box;
+			margin-right: 3.5px;
+			position: fixed;
+			outline: none;
+			top: 5px;
+			left: 5px;
+		}
+		.close:before, .close:after{
+			content: '';
+			position: absolute;
+			border-radius: 1px;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			background-color: rgba(0,0,0,.5);
+			width: 8px;
+			height: 2px;
+			transform: rotate(-45deg);
+		}
+		.close:before{
+			transform: rotate(45deg);
+		}
+	</style>
+</head>
+<body class="{{os}} about">
+	<div class="about-wrap">
+		<img class="logo" src="img/logo.svg">
+		<div style="padding-top: 20px;">Firebase Admin</div>
+		<div class="detail">
+			Version: 1.0.0<br>
+			Credits: Karthik Bhat, Koushik Bhushan
+		</div>
+		<div class="footer">Made with love in India</div>
+	</div>
+	<div class="close" onclick="closeWindow()"></div>
+	<script>
+		function closeWindow() {
+			window.close()
+		}
+	</script>
+</body>
+</html>

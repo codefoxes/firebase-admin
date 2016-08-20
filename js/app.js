@@ -1,26 +1,20 @@
 var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function ($http, dataFactory, $rootScope) {
-  const userPath = electron.app.getPath('userData')
+  $rootScope.userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
+  $rootScope.online = navigator.onLine
   try {
-    var config = fs.readFileSync(userPath + '/fba-config.json', 'utf8')
+    var config = fs.readFileSync($rootScope.userPath + '/fba-config.json', 'utf8')
 	  $rootScope.config = JSON.parse(config)
   } catch (err) {
 	  $rootScope.config = false
   }
   if (!$rootScope.config) {
     ipc.send('open-create-window')
-  } else {
-    let connection = $rootScope.config.connections[0]
-    let keySplits = connection.serviceAccount.privateKey.split('\\n')
-    connection.serviceAccount.privateKey = ''
-    keySplits.forEach(function (v, k) {
-      connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
-    })
-    var fireApp = firebase.initializeApp(connection)
   }
 })
 
-.controller('mainController', function (dataFactory, dataBin, $rootScope, $scope, $location) {
+.controller('mainController', function (dataFactory, dataBin, $rootScope, $scope, $timeout) {
+  $scope.apps = [];
   $scope.os = process.platform
   $scope.result = 'No Data'
   $scope.collections = []
@@ -28,37 +22,78 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $scope.activeUrl = ''
   $scope.listShown = false
   $scope.m = {'searchMenu': ''}
+  $scope.menuHidden = false
+  $scope.copiedNow = false;
   let query = ''
 
-  if ($rootScope.config) {
-    var dbRef = firebase.database().ref('/')
-    const baseURL = dbRef.root.toString()
+  $scope.menuHidden = !navigator.onLine
 
-    dbRef.on('value', function (snapshot) {
+  $timeout(function(){
+    $scope.menuHidden = $scope.collections.length <= 0
+  }, 10000)
+
+  $scope.connect = (connection) => {
+    $('.menu-overlay').show()
+    let keySplits = connection.serviceAccount.privateKey.split('\\n')
+    connection.serviceAccount.privateKey = ''
+    keySplits.forEach(function (v, k) {
+      connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
+    })
+    let id = connection.serviceAccount.projectId
+    if (typeof $scope.apps[id] === 'undefined') {
+      $scope.apps[id] = firebase.initializeApp(connection, id)
+    }
+    $scope.currentApp = $scope.apps[id]
+    $scope.update()
+  }
+
+  $scope.update = () => {
+    $scope.dbRef = $scope.currentApp.database().ref('/')
+    const baseURL = $scope.dbRef.root.toString()
+
+    $scope.dbRef.on('value', function (snapshot) {
       let tempCols = []
       snapshot.forEach(function (childSnapshot) {
         tempCols.push(childSnapshot.key)
       })
-      $scope.$apply(function () {
+      $timeout(function() {
         $scope.collections = tempCols
-      })
+        $scope.menuHidden = false
+      }, 0)
       $('.menu-overlay').hide()
     }, function (err) {
       $scope.result = 'The read failed: ' + err.code
     })
+  }
+
+  if ($rootScope.config) {
+    $scope.connect($rootScope.config.connections[0])
   } else {
     $('.menu-overlay').hide()
   }
 
-  $scope.create = function () {
-    ipc.send('open-create-window')
+  $scope.create = () => ipc.send('open-create-window')
+  
+  $scope.delete = (connection) => {
+    if (window.confirm('Do you really want to delete?')) {
+      let index = $rootScope.config.connections.indexOf(connection);
+      $rootScope.config.connections.splice(index, 1);
+      try {
+        writeFile.sync($rootScope.userPath + '/fba-config.json', angular.toJson($rootScope.config, 4), {mode: parseInt('0600', 8)})
+      } catch (err) {
+        if (err.code === 'EACCES') {
+          err.message = err.message + '\nYou don\'t have access to this file.\n'
+        }
+        throw err
+      }
+    }
   }
 
   $scope.get = function (name) {
-    dbRef.child(name).on('value', function (snapshot) {
+    $scope.dbRef.child(name).on('value', function (snapshot) {
       $scope.result = snapshot.val()
       // query = baseURL + name
-      query = `firebase.database().ref('/').child('${name}')`
+      query = `database().ref('/').child('${name}')`
       $('#query').val(query).trigger('input')
       $scope.activeUrl = name
     }, function (err) {
@@ -67,7 +102,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.run = function () {
-    query = $('#query').val()
+    query = '$scope.currentApp.' + $('#query').val()
     try {
       eval(query).on('value', function (snapshot) {
         $scope.result = snapshot.val()
@@ -78,6 +113,17 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
       $scope.result = 'Ooops.. There is an error":\n"' + err.message
     }
   }
+
+  $scope.copy = () => {
+    let copyText = JSON.stringify($scope.result, null, '\t');
+    clipboard.writeText(copyText)
+    $scope.copiedNow = true
+    $timeout(function(){
+      $scope.copiedNow = false
+    }, 2000)
+  }
+
+  $scope.goConsole = () => electron.shell.openExternal($scope.currentApp.options.databaseURL)
 })
 
 .controller('connectionController', function ($scope) {

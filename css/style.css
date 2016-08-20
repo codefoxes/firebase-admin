@@ -13,11 +13,12 @@
 	--color-border:   #b8b8b8;
 	--color-bg:       #fff;
 
-
-	--color-menu:		#d4d6d7;
-	--color-menu-bg:	#ececec;
+	--color-menu:     #d4d6d7;
+	--color-menu-bg:  #ececec;
 
 	--color-accent:   black; /* Fallback */
+
+    --chrome-height:  58px;
 }
 
 * {
@@ -93,13 +94,33 @@ body {
 }
 body, html, main, section.content{
   height: 100%;
+  position: relative;
   margin: 0;
   padding: 0;
 }
 
+.content.offline{
+  background: #eee;
+  font-size: 20px;
+  font-weight: 600;
+}
+.content .offline-wrap{
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.content .offline-wrap img{
+  width: 50px;
+  opacity: 0.4;
+}
+
 #mainmenu{
   width: 100%;
-  height: 36px;
+  height: var(--chrome-height);
   border-bottom: 1px solid #adabad;
   background: rgba(255,255,255,0);
   background: -moz-linear-gradient(top, rgba(209, 208, 209, 0.3) 0%, rgba(60,71,76,0.2) 100%);
@@ -109,6 +130,13 @@ body, html, main, section.content{
   background: -ms-linear-gradient(top, rgba(209, 208, 209, 0.3) 0%, rgba(60,71,76,0.2) 100%);
   background: linear-gradient(to bottom, rgba(209, 208, 209, 0.3) 0%, #d1d0d1 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#3c474c', GradientType=0 );
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+
+.titlebar{
+  height: 20px;
+  text-align: center;
 }
 
 #mainmenu .icons{
@@ -151,10 +179,11 @@ body, html, main, section.content{
   bottom: 0;
   left: 0;
   right: 0;
+  font-size: 12px;
 }
 .connection-list ul{
   position: absolute;
-  top: 32px;
+  top: calc(var(--chrome-height) - 2px);
   left: 10px;
   min-width: 180px;
   background: rgba(255,255,255,0.99);
@@ -164,41 +193,72 @@ body, html, main, section.content{
   box-shadow: 2px 2px 14px rgba(0,0,0,0.5);
 }
 .connection-list ul li{
-  padding: 2px 10px;
   cursor: default;
+  position: relative;
 }
 .connection-list li:hover{
   background: #649ce1;
   color: #fff;
 }
+.connection-list .name{
+  padding: 2px 10px;
+  margin-right: 20px;
+}
 
-.logo{
+.connection-list ul:before{
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #fff;
+  position: absolute;
+  bottom: 100%;
+  left: 18px;
+}
+
+.icon img{
   max-width: 100%;
   max-height: 100%;
+  transform: none;
+  transition: transform .4s;
+}
+.icon.open img {
+  transform: rotateY(180deg);
 }
 
 #adminmenumain{
-  height: calc(100% - 36px);
+  height: calc(100% - var(--chrome-height));
   float: left;
   width: 200px;
   min-width: 100px;
   max-width: 500px;
   background-color: var(--color-menu-bg);
   border-right: 1px solid var(--color-border);
+  transition: all .4s;
 }
 
-#admin-menu {
+#adminmenumain.hidden{
+  max-width: 0;
+  min-width: 0;
+}
+.hidden .menu-overlay{
+  display: none;
+}
+
+#admin-menu{
   position: relative;
   float: left;
   width: 100%;
   z-index: 1100;
   overflow: auto;
   color: var(--color-nav);
+  max-height: 100%;
 }
 
 .admin-content{
-  height: calc(100% - 36px);
-  min-height: calc(100% - 36px);
+  height: calc(100% - var(--chrome-height));
+  min-height: calc(100% - var(--chrome-height));
   color: #434A50;
   overflow: auto;
 }
@@ -465,6 +525,7 @@ pre > code {
 .result-wrap{
   height: calc(100% - 48px);
   padding-bottom: 10px;
+  position: relative;
 }
 .result{
   display: block;
@@ -477,6 +538,21 @@ pre > code {
   border-radius: 4px;
   max-height: 100%;
   overflow: auto;
+}
+.result-wrap .copy-wrap{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  text-align: center;
+  width: 42px;
+  font-size: 12px;
+  line-height: 1;
+}
+.copy-wrap img{
+  width: 14px;
+}
+.copied{
+  color: #fff;
 }
 
 ::-webkit-scrollbar-track {
@@ -711,6 +787,42 @@ label{
   border-top: 1px solid #c2c0c2;
   -webkit-app-region: drag;
   padding: 6px;
+}
+
+.close{
+  background-color: #ff6159;
+  border-radius: 100%;
+  padding: 0;
+  height: 12px;
+  width: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  margin-right: 3.5px;
+  position: absolute;
+  outline: none;
+  top: 5px;
+  right: 5px;
+  visibility: hidden;
+}
+.close:before, .close:after{
+  content: '';
+  position: absolute;
+  border-radius: 1px;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0,0,0,.4);
+  width: 8px;
+  height: 2px;
+  transform: rotate(-45deg);
+}
+.close:before{
+  transform: rotate(45deg);
+}
+.connection-list li:hover .close{
+  visibility: visible;
 }
 
 
