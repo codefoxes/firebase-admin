@@ -6,9 +6,6 @@ const app = electron.app
 let template = [{
   label: 'Edit',
   submenu: [{
-    label: 'Test',
-    role: 'undo'
-  }, {
     label: 'Undo',
     accelerator: 'CmdOrCtrl+Z',
     role: 'undo'
@@ -82,21 +79,6 @@ let template = [{
         focusedWindow.toggleDevTools()
       }
     }
-  }, {
-    type: 'separator'
-  }, {
-    label: 'App Menu Demo',
-    click: function (item, focusedWindow) {
-      if (focusedWindow) {
-        const options = {
-          type: 'info',
-          title: 'Application Menu Demo',
-          buttons: ['Ok'],
-          message: 'This demo is for the Menu section, showing how to create a clickable menu item in the application menu.'
-        }
-        electron.dialog.showMessageBox(focusedWindow, options, function () {})
-      }
-    }
   }]
 }, {
   label: 'Window',
@@ -142,13 +124,12 @@ if (process.platform === 'darwin') {
     label: name,
     submenu: [{
       label: `About ${name}`,
-      role: 'about'
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Services',
-      role: 'services',
-      submenu: []
+      click: function () {
+        let mainWin = BrowserWindow.getFocusedWindow()
+        let conWin = new BrowserWindow({parent: mainWin, width: 400, height: 300, frame: false, resizable: false})
+        conWin.on('closed', () => { conWin = null })
+        conWin.loadURL(`file://${__dirname}/../about.html`)
+      }
     }, {
       type: 'separator'
     }, {

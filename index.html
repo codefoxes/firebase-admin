@@ -13,28 +13,39 @@
 		const ipc = require('electron').ipcRenderer
 		const firebase = require("firebase")
 		const writeFile = require('write-file-atomic')
+		const clipboard = electron.clipboard
 		window.$ = window.jQuery = require('jquery')
 	</script>
 </head>
 <body ng-app="fba" ng-controller="mainController" class="{{os}} index">
 	<div id="mainmenu">
+		<div class="titlebar">Firebase Admin</div>
 		<div class="icons">
 			<div class="icon" ng-click="listShown = true;">
 				<img class="logo" src="img/logo.svg">
 				<span>&#9660;</span>
 			</div>
-			<div class="icon" ng-click="create()">
-				<img class="logo" src="img/add.svg">
+			<div class="icon" ng-click="create()" title="Create Connection">
+				<img class="add" src="img/add.svg">
 				<span>&#9660;</span>
+			</div>
+			<div class="icon" ng-click="menuHidden = !menuHidden" ng-class="{'open': menuHidden}" title="Toggle Sidebar">
+				<img class="toggle" src="img/sidebar.svg">
+			</div>
+			<div class="icon pull-right" ng-click="goConsole()" title="Firebase Console">
+				<img class="console" src="img/console.svg">
 			</div>
 		</div>
 		<div class="connection-list" ng-show="listShown" ng-click="listShown = false;">
 			<ul>
-				<li ng-repeat="con in config.connections">{{con.serviceAccount.projectId}}</li>
+				<li ng-repeat="con in config.connections" ng-click="connect(con)">
+					<div class="name">{{con.serviceAccount.projectId}}</div>
+					<div class="close" ng-click="delete(con)" title="Delete Connection"></div>
+				</li>
 			</ul>
 		</div>
 	</div>
-	<div id="adminmenumain" resizable r-directions="['right']">
+	<div id="adminmenumain" resizable r-directions="['right']" ng-class="{'hidden': menuHidden}">
 		<aside id="admin-menu" class="hidden-print">
 			<div class="menu-filter" ng-if="collections.length">
 				<input type="search" ng-model="m.searchMenu" placeholder="Filter Documents">
@@ -48,7 +59,7 @@
 					<li class="menu-item"><a href="#"><div class="menu-name">Sub</div></a></li>
 				</ul> -->
 		</aside>
-		<div class="menu-overlay"><div class="loader"></div></div>
+		<div class="menu-overlay" ng-show="online"><div class="loader"></div></div>
 	</div>
 	<div class="admin-content">
 		<main id="main" ng-view></main>
