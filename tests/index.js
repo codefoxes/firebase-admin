@@ -10,7 +10,7 @@ chai.should()
 chai.use(chaiAsPromised)
 
 describe('Test', function () {
-	it('passes', function () {
-		true.should.be.true
-	})
+  it('passes', function () {
+    true.should.be.true
+  })
 })

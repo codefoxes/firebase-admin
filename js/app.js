@@ -4,9 +4,9 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $rootScope.online = navigator.onLine
   try {
     var config = fs.readFileSync($rootScope.userPath + '/fba-config.json', 'utf8')
-	  $rootScope.config = JSON.parse(config)
+    $rootScope.config = JSON.parse(config)
   } catch (err) {
-	  $rootScope.config = false
+    $rootScope.config = false
   }
   if (!$rootScope.config) {
     ipc.send('open-create-window')
@@ -14,7 +14,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
 })
 
 .controller('mainController', function (dataFactory, dataBin, $rootScope, $scope, $timeout) {
-  $scope.apps = [];
+  $scope.apps = []
   $scope.os = process.platform
   $scope.result = 'No Data'
   $scope.collections = []
@@ -23,12 +23,12 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $scope.listShown = false
   $scope.m = {'searchMenu': ''}
   $scope.menuHidden = false
-  $scope.copiedNow = false;
+  $scope.copiedNow = false
   let query = ''
 
   $scope.menuHidden = !navigator.onLine
 
-  $timeout(function(){
+  $timeout(() => {
     $scope.menuHidden = $scope.collections.length <= 0
   }, 10000)
 
@@ -54,9 +54,13 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
     $scope.dbRef.on('value', function (snapshot) {
       let tempCols = []
       snapshot.forEach(function (childSnapshot) {
-        tempCols.push(childSnapshot.key)
+        tempCols.push({
+          name: childSnapshot.key,
+          url: childSnapshot.key,
+          leaf: !childSnapshot.hasChildren()
+        })
       })
-      $timeout(function() {
+      $timeout(() => {
         $scope.collections = tempCols
         $scope.menuHidden = false
       }, 0)
@@ -73,11 +77,11 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.create = () => ipc.send('open-create-window')
-  
+
   $scope.delete = (connection) => {
     if (window.confirm('Do you really want to delete?')) {
-      let index = $rootScope.config.connections.indexOf(connection);
-      $rootScope.config.connections.splice(index, 1);
+      let index = $rootScope.config.connections.indexOf(connection)
+      $rootScope.config.connections.splice(index, 1)
       try {
         writeFile.sync($rootScope.userPath + '/fba-config.json', angular.toJson($rootScope.config, 4), {mode: parseInt('0600', 8)})
       } catch (err) {
@@ -101,6 +105,29 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
     })
   }
 
+  $scope.open = (collection) => {
+    if (collection.open || collection.collections) {
+      collection.open = !collection.open
+      return
+    }
+    $scope.dbRef.child(collection.url).on('value', (snapshot) => {
+      let tempCols = []
+      snapshot.forEach(function (childSnapshot) {
+        tempCols.push({
+          name: childSnapshot.key,
+          url: collection.url + '/' + childSnapshot.key,
+          leaf: !childSnapshot.hasChildren()
+        })
+      })
+      $timeout(() => {
+        collection.open = true
+        collection.collections = tempCols
+      }, 0)
+    }, (err) => {
+      $scope.result = 'The read failed: ' + err.code
+    })
+  }
+
   $scope.run = function () {
     query = '$scope.currentApp.' + $('#query').val()
     try {
@@ -115,10 +142,10 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.copy = () => {
-    let copyText = JSON.stringify($scope.result, null, '\t');
+    let copyText = JSON.stringify($scope.result, null, '\t')
     clipboard.writeText(copyText)
     $scope.copiedNow = true
-    $timeout(function(){
+    $timeout(() => {
       $scope.copiedNow = false
     }, 2000)
   }

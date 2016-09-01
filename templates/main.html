@@ -4,6 +4,11 @@
 		<button type="submit" class="button" ng-click="run()">Run</button>
 	</form>
 	<div class="result-wrap">
+		<div class="result-mode">
+			<div class="icon">Tree</div>
+			<div class="icon">View</div>
+			<div class="icon">Edit</div>
+		</div>
 		<json-formatter open="1" json="result" class="result json-formatter-dark"></json-formatter>
 		<div class="copy-wrap" ng-click="copy()">
 			<img class="copy" src="img/copy.svg">
