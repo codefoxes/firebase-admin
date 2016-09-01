@@ -51,13 +51,7 @@
 				<input type="search" ng-model="m.searchMenu" placeholder="Filter Documents">
 			</div>
 			<ul class="admin-menu-main">
-				<li class="menu-item" ng-repeat="collection in collections | filter:m.searchMenu track by $index" ng-class="{'active': activeUrl == collection}">
-					<ins ng-click="get(collection)"><i class="ion-plus"></i></ins>
-					<div class="menu-name" ng-click="get(collection)">{{collection}}</div>
-				</li>
-				<!-- <ul class="sub-menu">
-					<li class="menu-item"><a href="#"><div class="menu-name">Sub</div></a></li>
-				</ul> -->
+				<li class="menu-item" ng-repeat="collection in collections | filter:m.searchMenu track by $index" ng-include="'templates/menuTree.html'" ng-class="[collection.open ? 'open': 'closed', {'active': activeUrl == collection.url, 'leaf': collection.leaf}]"></li>
 		</aside>
 		<div class="menu-overlay" ng-show="online"><div class="loader"></div></div>
 	</div>

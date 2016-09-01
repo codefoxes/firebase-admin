@@ -30,7 +30,7 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
       if ($rootScope.config.connections[i].serviceAccount.projectId == $scope.projectID) {
         $rootScope.config.connections[i] = connection
         updated = true
-        break;
+        break
       }
     }
     if (!updated) {

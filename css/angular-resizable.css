@@ -37,9 +37,10 @@
 .rg-top span, .rg-bottom span {
   border-width: 1px 0;
   left: 50%;
-  margin: 3.5px 0 0 -10px;
+  margin: 4.5px 0 0 -10px;
   width: 20px;
-  height: 4px;
+  height: 5px;
+  border-color: rgba(173,173,173,0.5);
 }
 
 .rg-top {
@@ -63,7 +64,7 @@
   width: 100%;
   bottom: 0;
   left: 0;
-  margin-bottom: -4px;
+  margin-bottom: -7px;
 }
 
 .rg-left {
