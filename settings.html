@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<base href="local">
+	<title>Preferences</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body ng-app="fba-p" ng-controller="settingsController" class="{{os}} settings">
+	<div id="adminmenumain">
+		<aside id="admin-menu" class="hidden-print">
+			<ul class="menu-list">
+				<li class="list-item" ng-repeat="item in items track by $index" ng-class="{'active': activeUrl == item.url}">
+					<div ng-click="changeView(item.url)">{{item.name}}</div>
+				</li>
+			</ul>
+		</aside>
+	</div>
+	<div class="admin-content">
+		<form class="form" ng-submit="save()" name="settings">
+			<section class="theme" ng-show="view.theme">
+				<div class="panel">
+					<div class="panel-heading">Main Theme</div>
+					<div class="radio">
+						<input type="radio" name="theme" id="theme-light" ng-model="form.theme" value="light">
+						<label for="theme-light">Light</label>
+					</div>
+					<div class="radio">
+						<input type="radio" name="theme" id="theme-dark" ng-model="form.theme" value="dark">
+						<label for="theme-dark">Dark</label>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel-heading">Json Theme</div>
+					<div class="radio">
+						<input type="radio" name="jsonTheme" id="json-default" ng-model="form.jsonTheme" value="default">
+						<label for="json-default">Default</label>
+					</div>
+					<div class="radio inline">
+						<input type="radio" name="jsonTheme" id="json-custom" ng-model="form.jsonTheme" value="custom">
+						<label for="json-custom">Custom</label>
+					</div>
+					<div class="theme inline">
+						<select ng-model="form.customTheme" ng-show="form.jsonTheme === 'custom'">
+							<option ng-selected="{{theme === form.customTheme}}" ng-repeat="theme in jsonThemes" value="{{theme}}">{{theme}}</option>
+						</select>
+					</div>
+				</div>
+			</section>
+			<section class="fonts" ng-show="view.fonts">
+				<div class="radio">
+					<input type="radio" name="fonts" id="fonts-system" ng-model="form.fonts" value="system">
+					<label for="fonts-system">System</label>
+				</div>
+				<div class="radio">
+					<input type="radio" name="fonts" id="fonts-monospace" ng-model="form.fonts" value="monospace">
+					<label for="fonts-monospace">Monospace</label>
+				</div>
+			</section>
+			<div class="saved" ng-class="{'now': saved}">Saved</div>
+			<footer class="toolbar toolbar-footer">
+				<div class="toolbar-actions">
+					<button class="button button-primary pull-right">Save</button>
+					<button class="button button-light" ng-click="close()">Cancel</button>
+				</div>
+			</footer>
+		</form>
+	</div>
+</body>
+<style type="text/css">
+	body{
+		font-size: 13px;
+	}
+	#adminmenumain, .admin-content{
+		height: 100%;
+	}
+	#adminmenumain{
+		width: 150px;
+	}
+	section{
+		padding: 10px;
+	}
+	.menu-list{
+		padding-top: 10px;
+	}
+	.list-item.active{
+		border-bottom: 1px solid #e6e6e6;
+		background: rgba(45,140,255,0.6);
+		color: #fff;
+	}
+	.list-item div{
+		padding: 4px 10px;
+		cursor: default;
+	}
+	.saved{
+		background: #329c32;
+		color: #fff;
+		padding: 4px 10px;
+		position: absolute;
+		left: 150px;
+		right: 0;
+		bottom: 0;
+		height: 66px;
+		max-height: 0;
+		transition: all .2s;
+		overflow: hidden;
+	}
+	.saved.now{
+		max-height: 66px;
+	}
+	.panel{
+		padding-bottom: 10px;
+	}
+	.panel-heading{
+		border-bottom: 1px solid #ccc;
+	}
+	.inline{
+		display: inline-block;
+	}
+</style>
+<script>
+	const electron = require('electron').remote
+	const ipc = require('electron').ipcRenderer
+	const writeFile = require('write-file-atomic')
+</script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/settings.js"></script>
+</html>

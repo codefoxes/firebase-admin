@@ -1,6 +1,6 @@
 <div>
 	<ins ng-click="open(collection)"><i class="icon"></i></ins>
-	<div class="menu-name" ng-click="get(collection.url)">{{collection.name}}</div>
+	<div class="menu-name" ng-click="get(collection)">{{collection.name}}</div>
 </div>
 <ul class="admin-menu-sub" ng-show="collection.collections && collection.open">
 	<li class="menu-item" ng-repeat="collection in collection.collections" ng-include="'templates/menuTree.html'" ng-class="[collection.open ? 'open': 'closed', {'active': activeUrl == collection.url, 'leaf': collection.leaf}]">

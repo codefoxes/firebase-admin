@@ -1,4 +1,4 @@
-var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']).run(function ($http, dataFactory, $rootScope) {
+var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']).run(function ($http, dataFactory, $rootScope) {
   $rootScope.userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
   $rootScope.online = navigator.onLine
@@ -10,6 +10,29 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
   if (!$rootScope.config) {
     ipc.send('open-create-window')
+  }
+
+  try {
+    var settings = fs.readFileSync($rootScope.userPath + '/fba-settings.json', 'utf8')
+    $rootScope.settings = JSON.parse(settings)
+  } catch (err) {
+    $rootScope.settings = require('./js/default-settings')
+  }
+
+  if ($rootScope.settings.theme === 'dark') {
+    document.documentElement.style.setProperty('--color-main', '#fff');
+    document.documentElement.style.setProperty('--color-sec', '#ccc');
+    document.documentElement.style.setProperty('--color-sec-bg', '#3c474c');
+    document.documentElement.style.setProperty('--bg-button-top', '#556167');
+    document.documentElement.style.setProperty('--bg-button-bottom', '#3c474c');
+    document.documentElement.style.setProperty('--color-border-button', '#3c474c #242d31 #242d31');
+    document.documentElement.style.setProperty('--bg-chrome-top', '#556167');
+    document.documentElement.style.setProperty('--bg-chrome-bottom', '#3c474c');
+    document.documentElement.style.setProperty('--color-border-chrome', '#3c474c #242d31 #242d31');
+    document.documentElement.style.setProperty('--bg-button-light-top', '#556167');
+    document.documentElement.style.setProperty('--bg-button-light-bottom', '#3c474c');
+    document.documentElement.style.setProperty('--color-border-button-light', '#3c474c #242d31 #242d31');
+    document.documentElement.style.setProperty('--bg-menu', '#3c474c');
   }
 })
 
@@ -24,6 +47,10 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $scope.m = {'searchMenu': ''}
   $scope.menuHidden = false
   $scope.copiedNow = false
+  $scope.view = {}
+  $scope.view.tree = true
+  $scope.collection = {}
+  $scope.codeResult = 'No Data'
   let query = ''
 
   $scope.menuHidden = !navigator.onLine
@@ -31,6 +58,44 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   $timeout(() => {
     $scope.menuHidden = $scope.collections.length <= 0
   }, 10000)
+
+  $scope.setJsonTheme = (cm, theme) => {
+    let cssId = `theme-${theme}`
+    if (!document.getElementById(cssId)) {
+      var head  = document.getElementsByTagName('head')[0]
+      var link  = document.createElement('link')
+      link.id   = cssId
+      link.rel  = 'stylesheet'
+      link.type = 'text/css'
+      link.href = `css/codemirror/${theme}.css`
+      head.appendChild(link)
+    }
+    cm.setOption('theme', theme)
+  }
+
+  $scope.codeViewLoaded = (cm) => {
+    $scope.codeView = cm
+    if ($rootScope.settings.theme === 'dark' && $rootScope.settings.jsonTheme === 'default') {
+      $scope.setJsonTheme(cm, 'monokai')
+    } else if ($rootScope.settings.jsonTheme === 'custom') {
+      $scope.setJsonTheme(cm, $rootScope.settings.customTheme)
+    }
+  }
+
+  $scope.codeOptions = {
+    lineWrapping : true,
+    lineNumbers: true,
+    onLoad: $scope.codeViewLoaded,
+    readOnly: 'nocursor',
+    mode: 'application/json',
+    extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+  }
+
+  $scope.rightClick = () => {
+    ipc.send('show-context-menu', {copy: $scope.codeView.getSelection()})
+  }
 
   $scope.connect = (connection) => {
     $('.menu-overlay').show()
@@ -93,13 +158,42 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
     }
   }
 
-  $scope.get = function (name) {
-    $scope.dbRef.child(name).on('value', function (snapshot) {
+  $scope.updateResult = (obj, url) => {
+    let tempCols = []
+    angular.forEach(obj, (val, key) => {
+      let tempObj = {
+        name: key,
+        url: url + '/' + key
+      }
+      if (typeof val === 'object') {
+        tempObj.collections = $scope.updateResult(val, tempObj.url)
+      } else {
+        tempObj.value = val
+        tempObj.leaf = true
+      }
+      tempCols.push(tempObj)
+    })
+    return tempCols
+  }
+
+  $scope.get = function (collection) {
+    $scope.collection = {}
+    $scope.dbRef.child(collection.url).on('value', function (snapshot) {
       $scope.result = snapshot.val()
-      // query = baseURL + name
-      query = `database().ref('/').child('${name}')`
+      $scope.codeResult = JSON.stringify($scope.result, null, 2)
+      $scope.collection.name = collection.name
+      $scope.collection.url = collection.url
+      if (typeof $scope.result === 'object') {
+        $scope.collection.collections = $scope.updateResult($scope.result, collection.url)
+      } else {
+        $scope.collection.value = $scope.result
+        $scope.collection.leaf = true
+      }
+      $scope.collection.open = true
+      // query = baseURL + collection.url
+      query = `database().ref('/').child('${collection.url}')`
       $('#query').val(query).trigger('input')
-      $scope.activeUrl = name
+      $scope.activeUrl = collection.url
     }, function (err) {
       $scope.result = 'The read failed: ' + err.code
     })
@@ -129,10 +223,14 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.run = function () {
+    $scope.collection = {}
     query = '$scope.currentApp.' + $('#query').val()
     try {
       eval(query).on('value', function (snapshot) {
         $scope.result = snapshot.val()
+        $scope.collection.name = snapshot.key
+        $scope.codeResult = JSON.stringify($scope.result, null, 2)
+        $scope.collection.collections = $scope.updateResult($scope.result, snapshot.key)
       }, function (err) {
         $scope.result = 'The read failed: ' + err.code
       })
@@ -151,6 +249,43 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
   }
 
   $scope.goConsole = () => electron.shell.openExternal($scope.currentApp.options.databaseURL)
+
+  $scope.refreshCodeView = () => {
+    $timeout(() => {
+      $scope.codeView.refresh()
+      //$scope.codeView.foldCode(CodeMirror.Pos(0, 0))
+    }, 0)
+  }
+
+  $scope.changeView = (view) => {
+    angular.forEach($scope.view, (v, k) => {
+      $scope.view[k] = false
+    })
+    $scope.view[view] = true
+    $scope.refreshCodeView()
+  }
+
+  $scope.addChild = (collection) => {
+    collection.open = true
+    collection.adding = true
+  }
+
+  $scope.saveChild = (collection) => {
+    let tempObj = {}
+    tempObj[collection.newKey] = collection.newValue
+    $scope.dbRef.child(collection.url).update(tempObj)
+  }
+
+  $scope.remove = (url) => {
+    let notice = `!! All data at this location, including nested data, will be permanently deleted !!\n\nData Location: ${url}\n\nDo you really want to remove?`
+    if (window.confirm(notice)) {
+      $scope.dbRef.child(url).remove()
+    }
+  }
+
+  $scope.updateChild = (collection) => {
+    $scope.dbRef.child(collection.url).set(collection.value)
+  }
 })
 
 .controller('connectionController', function ($scope) {
@@ -242,6 +377,18 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'jsonFormatter']
         $(element).tooltip('hide')
       })
     }
+  }
+})
+
+.directive('ngRightClick', ($parse) => {
+  return (scope, element, attrs) => {
+    var fn = $parse(attrs.ngRightClick)
+    element.bind('contextmenu', (event) => {
+      scope.$apply(() => {
+        event.preventDefault()
+        fn(scope, {$event:event})
+      })
+    })
   }
 })
 

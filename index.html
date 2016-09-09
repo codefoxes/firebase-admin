@@ -5,7 +5,7 @@
 	<base href="local">
 	<title>Firbase Admin</title>
 	<link rel="stylesheet" type="text/css" href="css/angular-resizable.css">
-	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
+	<link rel="stylesheet" type="text/css" href="css/codemirror/codemirror.css">
 	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script>
@@ -52,6 +52,7 @@
 			</div>
 			<ul class="admin-menu-main">
 				<li class="menu-item" ng-repeat="collection in collections | filter:m.searchMenu track by $index" ng-include="'templates/menuTree.html'" ng-class="[collection.open ? 'open': 'closed', {'active': activeUrl == collection.url, 'leaf': collection.leaf}]"></li>
+			</ul>
 		</aside>
 		<div class="menu-overlay" ng-show="online"><div class="loader"></div></div>
 	</div>
@@ -63,7 +64,12 @@
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-route.min.js"></script>
 <script type="text/javascript" src="js/angular-resizable.min.js"></script>
-<script type="text/javascript" src="js/json-formatter.js"></script>
+<script type="text/javascript" src="js/codemirror/codemirror.js"></script>
+<script type="text/javascript" src="js/codemirror/foldcode.js"></script>
+<script type="text/javascript" src="js/codemirror/foldgutter.js"></script>
+<script type="text/javascript" src="js/codemirror/brace-fold.js"></script>
+<script type="text/javascript" src="js/codemirror/javascript.js"></script>
+<script type="text/javascript" src="js/codemirror/ui-codemirror.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="js/routes.js"></script>
 <script>

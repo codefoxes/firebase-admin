@@ -52,6 +52,24 @@ app.on('activate', function () {
   }
 })
 
+let contextMenu
+app.on('browser-window-created', function (event, win) {
+  win.webContents.on('context-menu', function (e, params) {
+    const contextTemplate = require('./js/context-menu')({win: win, params: params})
+    contextMenu = Menu.buildFromTemplate(contextTemplate)
+    contextMenu.popup(win, params.x, params.y)
+  })
+})
+
+ipc.on('show-context-menu', (e, args) => {
+  let win = BrowserWindow.fromWebContents(e.sender)
+  if (contextMenu) {
+    contextMenu.popup(win)
+  }
+})
+
+ipc.on('reload-window', () => mainWindow.reload())
+
 ipc.on('open-create-window', function (event) {
   let mainWin = electron.BrowserWindow.getFocusedWindow()
   let conWin = new electron.BrowserWindow({parent: mainWin, width: 600, height: 300})

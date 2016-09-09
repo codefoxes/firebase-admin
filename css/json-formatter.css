@@ -91,9 +91,6 @@
 .json-formatter-row:hover > a > .thumbnail-text {
   opacity: 0.6;
 }
-.json-formatter-dark.json-formatter-row {
-  font-family: monospace;
-}
 .json-formatter-dark.json-formatter-row,
 .json-formatter-dark.json-formatter-row a,
 .json-formatter-dark.json-formatter-row a:hover {
