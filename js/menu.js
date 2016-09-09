@@ -133,6 +133,16 @@ if (process.platform === 'darwin') {
     }, {
       type: 'separator'
     }, {
+      label: 'Preferences',
+      click: function () {
+        let mainWin = BrowserWindow.getFocusedWindow()
+        let setWin = new BrowserWindow({parent: mainWin, width: 600, height: 400})
+        setWin.on('closed', () => { setWin = null; })
+        setWin.loadURL(`file://${__dirname}/../settings.html`)
+      }
+    }, {
+      type: 'separator'
+    }, {
       label: `Hide ${name}`,
       accelerator: 'Command+H',
       role: 'hide'

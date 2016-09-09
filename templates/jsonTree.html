@@ -1,0 +1,30 @@
+<div>
+	<ins ng-click="collection.open = !collection.open"><i class="icon"></i></ins>
+	<span class="menu-content">
+		<span>
+			<span class="name" ng-click="get(collection)">{{collection.name}}</span>
+			<span class="value-container" ng-hide="!collection.value">: <input type="text" name="valueedit" ng-model="collection.value" size="{{collection.value.length}}" ng-keyup="$event.keyCode == 13 && updateChild(collection)"></span>
+		</span>
+		<span class="btn add-btn" title="add child" ng-hide="collection.leaf" ng-click="addChild(collection)">+</span>
+		<span class="btn remove-btn" title="delete" ng-click="remove(collection.url)">x</span>
+	</span>
+</div>
+<ul class="admin-menu-sub" ng-show="collection.collections && collection.open">
+	<li class="menu-item adding" ng-show="collection.adding"><div><ins></ins>
+		<span class="menu-content">
+			<span>
+				<span class="name-label">Name</span>
+				<input type="text" class="name-input" placeholder="name" ng-model="collection.newKey">
+				<span class="value-input-container">
+					<span class="value-label">Value</span><input type="text" class="value-input" placeholder="value" ng-model="collection.newValue">
+				</span>
+			</span>
+			<span class="btn remove-btn" title="delete" ng-click="collection.adding = false">x</span>
+		</span>
+	</div></li>
+	<li class="confirm" ng-show="collection.adding"><ins></ins>
+		<button class="btn cancel-btn" ng-click="collection.adding = false">Cancel</button>
+		<button class="btn confirm-btn" ng-click="saveChild(collection)">Add</button>
+	</li>
+	<li class="menu-item" ng-repeat="collection in collection.collections" ng-include="'templates/jsonTree.html'" ng-class="[collection.open ? 'open': 'closed', {'leaf': collection.leaf}]">
+</ul>
