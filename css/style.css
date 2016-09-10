@@ -836,6 +836,7 @@ hr {
 }
 
 #query{
+  display: inline-block;
   width: calc(100% - 85px);
   min-height: 32px;
   height: 100%;
