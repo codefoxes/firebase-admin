@@ -5,8 +5,6 @@
 	<base href="local">
 	<title>Create Connection</title>
 	<link rel="stylesheet" type="text/css" href="css/angular-resizable.css">
-	<link rel="stylesheet" type="text/css" href="css/json-formatter.css">
-	<link rel="stylesheet" type="text/css" href="css/ionicons.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body ng-app="fba-c" ng-controller="connectionController" class="{{os}} create">
@@ -43,6 +41,11 @@
 		</footer>
 	</form>
 </body>
+<style type="text/css">
+	body{
+		border-top: 1px solid var(--color-border);
+	}
+</style>
 <script>
 	const electron = require('electron').remote
 	const firebase = require("firebase")
