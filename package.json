@@ -6,8 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha tests",
-    "build": "electron-packager . Firebase-admin --platform=darwin --arch=x64 --ignore=node_modules/electron-*",
-    "package": "asar pack 'Firebase-admin-darwin-x64/Firebase-admin.app/Contents/Resources/app' 'Firebase-admin-darwin-x64/Firebase-admin.app/Contents/Resources/app.asar'"
+    "build": "node ./build.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +28,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "electron-packager": "^7.7.0",
-    "electron-prebuilt": "^1.2.0",
+    "electron": "^1.3.5",
     "mocha": "^3.0.0",
     "spectron": "^3.3.0"
   },
