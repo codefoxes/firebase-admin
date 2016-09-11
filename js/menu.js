@@ -1,9 +1,19 @@
 const electron = require('electron')
 const BrowserWindow = electron.BrowserWindow
-
-const app = electron.app
+const name = electron.app.getName()
 
 let template = [{
+  label: 'File',
+  submenu: [{
+    label: 'Create',
+    accelerator: 'CmdOrCtrl+N',
+    click: (item, focusedWindow) => {
+      if (focusedWindow.createWindow) {
+        focusedWindow.createWindow('conWin', 'create.html', {parent: focusedWindow, width: 600, height: 300})
+      }
+    }
+  }]
+}, {
   label: 'Edit',
   submenu: [{
     label: 'Undo',
@@ -99,7 +109,7 @@ let template = [{
     enabled: false,
     key: 'reopenMenuItem',
     click: function () {
-      app.emit('activate')
+      electron.app.emit('activate')
     }
   }]
 }, {
@@ -119,26 +129,23 @@ let template = [{
 }]
 
 if (process.platform === 'darwin') {
-  const name = electron.app.getName()
   template.unshift({
     label: name,
     submenu: [{
       label: `About ${name}`,
-      click: function () {
-        let mainWin = BrowserWindow.getFocusedWindow()
-        let conWin = new BrowserWindow({parent: mainWin, width: 400, height: 300, frame: false, resizable: false})
-        conWin.on('closed', () => { conWin = null })
-        conWin.loadURL(`file://${__dirname}/../about.html`)
+      click: (item, focusedWindow) => {
+        if (focusedWindow.createWindow) {
+          focusedWindow.createWindow('abtWin', 'about.html', {parent: focusedWindow, width: 400, height: 300, frame: false, resizable: false})
+        }
       }
     }, {
       type: 'separator'
     }, {
       label: 'Preferences',
-      click: function () {
-        let mainWin = BrowserWindow.getFocusedWindow()
-        let setWin = new BrowserWindow({parent: mainWin, width: 600, height: 400})
-        setWin.on('closed', () => { setWin = null; })
-        setWin.loadURL(`file://${__dirname}/../settings.html`)
+      click: (item, focusedWindow) => {
+        if (focusedWindow.createWindow) {
+          focusedWindow.createWindow('setWin', 'settings.html', {parent: focusedWindow, width: 600, height: 400})
+        }
       }
     }, {
       type: 'separator'
@@ -159,7 +166,7 @@ if (process.platform === 'darwin') {
       label: 'Quit',
       accelerator: 'Command+Q',
       click: function () {
-        app.quit()
+        electron.app.quit()
       }
     }]
   })
@@ -170,6 +177,30 @@ if (process.platform === 'darwin') {
   }, {
     label: 'Bring All to Front',
     role: 'front'
+  })
+} else {
+  template[0].submenu.push({
+    label: 'Exit',
+    accelerator: 'CmdOrCtrl+W',
+    role: 'close'
+  })
+  template[4].submenu = template[4].submenu.concat([{
+    type: 'separator'
+  }, {
+    label: `About ${name}`,
+    click: (item, focusedWindow) => {
+      if (focusedWindow.createWindow) {
+        focusedWindow.createWindow('abtWin', 'about.html', {parent: focusedWindow, width: 400, height: 300, frame: false, resizable: false})
+      }
+    }
+  }])
+  template.splice(4, 0, {
+    label: 'Settings',
+    click: (item, focusedWindow) => {
+      if (focusedWindow.createWindow) {
+        focusedWindow.createWindow('setWin', 'settings.html', {parent: focusedWindow, width: 600, height: 400})
+      }
+    }
   })
 }
 

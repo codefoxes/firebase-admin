@@ -2,6 +2,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $rootScope.userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
   $rootScope.online = navigator.onLine
+  $rootScope.titleBar = true
   try {
     var config = fs.readFileSync($rootScope.userPath + '/fba-config.json', 'utf8')
     $rootScope.config = JSON.parse(config)
@@ -17,6 +18,14 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     $rootScope.settings = JSON.parse(settings)
   } catch (err) {
     $rootScope.settings = require('./js/default-settings')
+  }
+
+  $rootScope.removeTitleBar = () => {
+    $rootScope.titleBar = false
+    document.documentElement.style.setProperty('--chrome-height', '38px')
+  }
+  if (process.platform !== 'darwin') {
+    $rootScope.removeTitleBar()
   }
 
   if ($rootScope.settings.theme === 'dark') {

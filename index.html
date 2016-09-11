@@ -19,7 +19,7 @@
 </head>
 <body ng-app="fba" ng-controller="mainController" class="{{os}} index">
 	<div id="mainmenu">
-		<div class="titlebar">Firebase Admin</div>
+		<div class="titlebar" ng-if="titleBar">Firebase Admin</div>
 		<div class="icons">
 			<div class="icon" ng-click="listShown = true;">
 				<img class="logo" src="img/logo.svg">

@@ -10,8 +10,9 @@ if (process.mas) app.setName('Firebase Admin')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let subWindows = []
 
-function createWindow () {
+function createMainWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600, minWidth: 600, minHeight: 500, titleBarStyle: 'hidden'})
 
@@ -26,14 +27,25 @@ function createWindow () {
     mainWindow = null
   })
 
+  mainWindow.createWindow = (name, file, options) => createWindow(name, file, options)
+
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
+}
+
+function createWindow(name, file, options) {
+  if (!subWindows[name]) {
+    subWindows[name] = new electron.BrowserWindow(options)
+    subWindows[name].on('closed', () => { subWindows[name] = null })
+    subWindows[name].loadURL(`file://${__dirname}/${file}`)
+    subWindows[name].setMenu(null)
+  }
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createMainWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -48,7 +60,7 @@ app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
-    createWindow()
+    createMainWindow()
   }
 })
 
@@ -71,8 +83,5 @@ ipc.on('show-context-menu', (e, args) => {
 ipc.on('reload-window', () => mainWindow.reload())
 
 ipc.on('open-create-window', function (event) {
-  let mainWin = electron.BrowserWindow.getFocusedWindow()
-  let conWin = new electron.BrowserWindow({parent: mainWin, width: 600, height: 300})
-  conWin.on('closed', () => { conWin = null })
-  conWin.loadURL(`file://${__dirname}/create.html`)
+  createWindow('conWin', 'create.html', {parent: mainWindow, width: 600, height: 300})
 })

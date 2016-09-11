@@ -10,14 +10,21 @@
 			padding: 0;
 		}
 		body{
-			-webkit-app-region: drag;
 			font-family: system,-apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,"Segoe UI",sans-serif;
-			padding-top: 50px;
+			-webkit-user-select: none;
+			user-select: none;
 			text-align: center;
 			background: #6ea75d;
 			color: #fff;
 			box-sizing: border-box;
 			animation: color-anim 30s ease infinite;
+		}
+		.no-drag{
+			height: 30px;
+		}
+		.about-wrap{
+			-webkit-app-region: drag;
+			padding-top: 20px;
 		}
 		.logo{
 			width: 50px;
@@ -74,9 +81,31 @@
 		.close:before{
 			transform: rotate(45deg);
 		}
+		.win32 .close{
+			top: 0;
+			left: inherit;
+			right: 0;
+			margin-right: 0;
+			width: 40px;
+			height: 28px;
+			border-radius: 0;
+			background-color: transparent;
+			border-color: transparent;
+		}
+		.win32 .close:before, .win32 .close:after{
+			height: 1px;
+			width: 14px;
+		}
+		.win32 .close:hover{
+			background: #e51400;
+		}
+		.win32 .close:hover:before, .win32 .close:hover:after{
+			background-color: #fff;
+		}
 	</style>
 </head>
-<body class="{{os}} about">
+<body class="about">
+	<div class="no-drag"></div>
 	<div class="about-wrap">
 		<img class="logo" src="img/logo.svg">
 		<div style="padding-top: 20px;">Firebase Admin</div>
@@ -88,6 +117,7 @@
 	</div>
 	<div class="close" onclick="closeWindow()"></div>
 	<script>
+		document.getElementsByTagName('body')[0].classList.add(process.platform)
 		function closeWindow() {
 			window.close()
 		}
