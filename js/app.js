@@ -49,6 +49,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.apps = []
   $scope.os = process.platform
   $scope.result = 'No Data'
+  $scope.results = ['No Data']
   $scope.collections = []
   $scope.query = ''
   $scope.activeUrl = ''
@@ -58,11 +59,11 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.copiedNow = false
   $scope.view = {}
   $scope.view.tree = true
-  $scope.mode = {}
-  $scope.mode.explorer = true
-  $scope.collection = {}
+  $scope.mode = 'explorer'
+  $scope.collection = {url: ''}
   $scope.codeResult = 'No Data'
   $scope.query = ''
+  $scope.mode = 'explorer'
 
   console.oldLog = console.log
   console.log = (...value) => {
@@ -144,7 +145,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
 
   $scope.update = () => {
     $scope.dbRef = $scope.currentApp.database().ref('/')
-    const baseURL = $scope.dbRef.root.toString()
+    $scope.baseURL = $scope.dbRef.root.toString()
 
     $scope.dbRef.on('value', function (snapshot) {
       let tempCols = []
@@ -160,6 +161,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
         $scope.menuHidden = false
       }, 0)
       $('.menu-overlay').hide()
+      $scope.changeQuery()
     }, function (err) {
       $scope.result = 'The read failed: ' + err.code
     })
@@ -193,7 +195,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     angular.forEach(obj, (val, key) => {
       let tempObj = {
         name: key,
-        url: url + '/' + key
+        url: url + (url ==='/' ? '' : url) + key
       }
       if (typeof val === 'object') {
         tempObj.collections = $scope.updateResult(val, tempObj.url)
@@ -207,9 +209,11 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   }
 
   $scope.get = function (collection) {
+    $scope.results = []
     $scope.collection = {}
     $scope.dbRef.child(collection.url).on('value', function (snapshot) {
       $scope.result = snapshot.val()
+      $scope.results.push(snapshot.val())
       $scope.codeResult = JSON.stringify($scope.result, null, 2)
       $scope.collection.name = collection.name
       $scope.collection.url = collection.url
@@ -220,9 +224,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
         $scope.collection.leaf = true
       }
       $scope.collection.open = true
-      // query = baseURL + collection.url
-      $scope.query = `firebase().database().ref('/${collection.url}').on('value', function (snapshot) {console.log(snapshot.val())})`
-      //$('#query').val(query).trigger('input')
+      $scope.changeQuery()
       $scope.activeUrl = collection.url
     }, function (err) {
       $scope.result = 'The read failed: ' + err.code
@@ -239,7 +241,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
       snapshot.forEach(function (childSnapshot) {
         tempCols.push({
           name: childSnapshot.key,
-          url: collection.url + '/' + childSnapshot.key,
+          url: collection.url + (collection.url === '/' ? '' : collection.url) + childSnapshot.key,
           leaf: !childSnapshot.hasChildren()
         })
       })
@@ -253,27 +255,51 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   }
 
   $scope.run = function () {
-    $scope.collection = {}
     let query = $scope.queryView.getValue()
-    let regex = 'firebase().'
-    query = query.replace(regex, '$scope.currentApp.')
-
-    if($scope.mode.explorer === true) {
+    $scope.results = []
+    $scope.collection = {}
+    if($scope.mode === 'explorer') {
       try {
+        query = query.substring($scope.baseURL.length - 1)
+        $scope.currentApp.database().ref(query).on('value', function (snapshot) {
+          $scope.result = snapshot.val()
+          $scope.results.push(snapshot.val())
+          if(!snapshot.key) {
+            $scope.collection.name = $scope.currentApp.name
+            $scope.collection.url = '/'
+          } else {
+            $scope.collection.name = snapshot.key
+            $scope.collection.url = query.substring(1)
+          }
+          if (typeof $scope.result === 'object') {
+            $scope.collection.collections = $scope.updateResult($scope.result, $scope.collection.url)
+          } else {
+            $scope.collection.value = $scope.result
+            $scope.collection.leaf = true
+          }
+          $scope.collection.open = true
+          $scope.codeResult = JSON.stringify($scope.result, null, 2)
+          $scope.activeUrl = $scope.collection.url
+        }, function (err) {
+          $scope.result = 'The read failed: ' + err.code
+        })
+      } catch (err) {
+        $scope.result = 'Ooops.. There is an error":\n"' + err.message
+      }
+    } else if($scope.mode === 'query') {
+      let regex = 'firebase().'
+      query = query.replace(regex, '$scope.currentApp.')
+       try {
         eval(query)
         if (typeof $scope.$log !== 'undefined' && $scope.$log.length > 0) {
           $scope.$log.forEach((res) => {
-            $scope.result = $scope.result + res
+            $scope.results.push(res)
           })
         }
         $scope.$log = null
       } catch (err) {
         $scope.result = 'Ooops.. There is an error":\n"' + err.message
       }
-    } else if($scope.mode.query === true) {
-      var regExp = /\(([^)]+)\)/;
-      var logResult = regExp.exec("Console.log('Somthing (in) console')")
-      console.log(logResult)
     }
   }
 
@@ -294,6 +320,12 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     }, 0)
   }
 
+  $scope.refreshQueryView = () => {
+    $timeout(() => {
+      $scope.queryView.refresh()
+    }, 0)
+  }
+
   $scope.changeView = (view) => {
     angular.forEach($scope.view, (v, k) => {
       $scope.view[k] = false
@@ -303,11 +335,18 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   }
 
   $scope.changeMode = (mode) => {
-    angular.forEach($scope.mode, (v, k) => {
-      $scope.mode[k] = false
-    })
-    $scope.mode[mode] = true
-    $scope.refreshCodeView()
+    $scope.mode = mode
+    $scope.changeView('raw')
+    $scope.changeQuery()
+  }
+
+  $scope.changeQuery = () => {
+    if ($scope.mode === 'explorer') {
+      $scope.queryView.setValue($scope.baseURL + ($scope.collection.url === '/' ? '' : $scope.collection.url))
+    } else if ($scope.mode === 'query') {
+      $scope.queryView.setValue(`firebase().database().ref('/${$scope.collection.url}').on('value', function (snapshot) {console.log(snapshot.val())})`)
+    }
+    $scope.refreshQueryView()
   }
 
   $scope.addChild = (collection) => {

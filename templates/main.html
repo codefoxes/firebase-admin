@@ -4,10 +4,10 @@
 		<ui-codemirror id="query" ui-codemirror-opts="codeQueryOptions" ng-model="query"></ui-codemirror>
 		<button type="submit" class="button" ng-click="run()">Run</button>
 	</form>
-	<div class="result-wrap" ng-show="mode.explorer">
+	<div class="result-wrap">
 		<div class="result-mode">
-			<div class="icon" ng-click="changeView('tree')" ng-class="{'active': view.tree}">Tree</div>
-			<div class="icon" ng-click="changeView('code')" ng-class="{'active': view.code}">Json</div>
+			<div class="icon" ng-click="changeView('tree')" ng-show="mode == 'explorer'" ng-class="{'active': view.tree}">Tree</div>
+			<div class="icon" ng-click="changeView('code')" ng-show="mode == 'explorer'" ng-class="{'active': view.code}">Json</div>
 			<div class="icon" ng-click="changeView('raw')" ng-class="{'active': view.raw}">Raw</div>
 		</div>
 		<div class="result-view tree" ng-show="view.tree">
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="result-view raw" ng-show="view.raw">
-			<div class="result">{{result}}</div>
+			<div class="result" ng-repeat="result in results">{{result}}</div>
 		</div>
 		<div class="copy-wrap" ng-click="copy()">
 			<img class="copy" src="img/copy.svg">
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 
-	<div class="result-wrap" ng-show="mode.query">
+	<!-- <div class="result-wrap" ng-show="mode.query">
 		<div class="result-view raw" ng-show="view.raw">
 			<div class="result">{{result}}</div>
 		</div>
@@ -40,7 +40,7 @@
 			<img class="copy" src="img/copy.svg">
 			<div class="copied" ng-show="copiedNow">copied</div>
 		</div>
-	</div>
+	</div> -->
 </section>
 <section ng-hide="online" class="content offline">
 	<div class="offline-wrap">

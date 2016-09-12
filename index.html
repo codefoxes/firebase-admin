@@ -32,11 +32,13 @@
 			<div class="icon" ng-click="menuHidden = !menuHidden" ng-class="{'open': menuHidden}" title="Toggle Sidebar">
 				<img class="toggle" src="img/sidebar.svg">
 			</div>
-			<div class="icon" ng-click="changeMode('explorer')" title="Object Explorer">
-				Explorer
-			</div>
-			<div class="icon" ng-click="changeMode('query')" title="Query">
-				Query
+			<div class="mode-icons">
+				<div class="icon" ng-class="mode == 'explorer' ? 'active' : ''" ng-click="changeMode('explorer')" title="Object Explorer">
+					Explorer
+				</div>
+				<div class="icon" ng-class="mode == 'query' ? 'active' : ''" ng-click="changeMode('query')" title="Query">
+					Query
+				</div>
 			</div>
 			<div class="icon pull-right" ng-click="goConsole()" title="Firebase Console">
 				<img class="console" src="img/console.svg">
