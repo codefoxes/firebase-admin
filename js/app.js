@@ -154,7 +154,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
           name: childSnapshot.key,
           url: childSnapshot.key,
           leaf: !childSnapshot.hasChildren()
-        })
+        })        
       })
       $timeout(() => {
         $scope.collections = tempCols
@@ -195,7 +195,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     angular.forEach(obj, (val, key) => {
       let tempObj = {
         name: key,
-        url: url + (url ==='/' ? '' : url) + key
+        url: url ? (url + '/' + key) : key
       }
       if (typeof val === 'object') {
         tempObj.collections = $scope.updateResult(val, tempObj.url)
@@ -241,7 +241,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
       snapshot.forEach(function (childSnapshot) {
         tempCols.push({
           name: childSnapshot.key,
-          url: collection.url + (collection.url === '/' ? '' : collection.url) + childSnapshot.key,
+          url: collection.url + '/' + childSnapshot.key,
           leaf: !childSnapshot.hasChildren()
         })
       })
@@ -257,19 +257,22 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.run = function () {
     let query = $scope.queryView.getValue()
     $scope.results = []
-    $scope.collection = {}
     if($scope.mode === 'explorer') {
+      $scope.collection = {}
       try {
-        query = query.substring($scope.baseURL.length - 1)
+        if(!query.endsWith('/')) {
+          query = query + '/'
+        }
+        query = query.substring($scope.baseURL.length, query.length - 1)
         $scope.currentApp.database().ref(query).on('value', function (snapshot) {
           $scope.result = snapshot.val()
           $scope.results.push(snapshot.val())
           if(!snapshot.key) {
             $scope.collection.name = $scope.currentApp.name
-            $scope.collection.url = '/'
+            $scope.collection.url = ''
           } else {
             $scope.collection.name = snapshot.key
-            $scope.collection.url = query.substring(1)
+            $scope.collection.url = query
           }
           if (typeof $scope.result === 'object') {
             $scope.collection.collections = $scope.updateResult($scope.result, $scope.collection.url)
@@ -342,9 +345,18 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
 
   $scope.changeQuery = () => {
     if ($scope.mode === 'explorer') {
-      $scope.queryView.setValue($scope.baseURL + ($scope.collection.url === '/' ? '' : $scope.collection.url))
+      $scope.query = $scope.baseURL
+      if ($scope.collection.url) {
+        $scope.query = $scope.baseURL + $scope.collection.url + '/'
+      }
+      $scope.queryView.setValue($scope.query)
     } else if ($scope.mode === 'query') {
-      $scope.queryView.setValue(`firebase().database().ref('/${$scope.collection.url}').on('value', function (snapshot) {console.log(snapshot.val())})`)
+      if ($scope.collection.url) {
+        $scope.query = $scope.collection.url + '/'
+      } else {
+        $scope.query = ''
+      }
+      $scope.queryView.setValue(`firebase().database().ref('/${$scope.query}').on('value', function (snapshot) {console.log(snapshot.val())})`)
     }
     $scope.refreshQueryView()
   }
