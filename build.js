@@ -9,7 +9,12 @@ let options = {
   platform: process.platform,
   asar: true,
   icon: 'img/icons/firebase-admin',
-  ignore: 'img/icons'
+  ignore: [
+    '/img/icons($|/)',
+    '/node_modules/spectron($|/)',
+    '/node-modules/mocha($|/)',
+    '/node-modules/chai($|/)'
+  ]
 }
 
 packager(options, (err, appPaths) => {

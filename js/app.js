@@ -1,7 +1,11 @@
 var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']).run(function ($http, dataFactory, $rootScope) {
   $rootScope.userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
+  $rootScope.rootError = false
   $rootScope.online = navigator.onLine
+  if (!$rootScope.online) {
+    $rootScope.rootError = true
+  }
   $rootScope.titleBar = true
   try {
     var config = fs.readFileSync($rootScope.userPath + '/fba-config.json', 'utf8')
@@ -9,7 +13,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   } catch (err) {
     $rootScope.config = false
   }
-  if (!$rootScope.config) {
+  if (!$rootScope.config || $rootScope.config.connections.length === 0) {
     ipc.send('open-create-window')
   }
 
@@ -55,7 +59,8 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.activeUrl = ''
   $scope.listShown = false
   $scope.m = {'searchMenu': ''}
-  $scope.menuHidden = false
+  $scope.menuOverlay = navigator.onLine
+  $scope.menuHidden = !navigator.onLine
   $scope.copiedNow = false
   $scope.view = {}
   $scope.view.tree = true
@@ -75,11 +80,27 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     }
   }
 
-  $scope.menuHidden = !navigator.onLine
-
   $timeout(() => {
     $scope.menuHidden = $scope.collections.length <= 0
   }, 10000)
+
+  $scope.changeQueryBoxHeight = (height) => {
+    document.documentElement.style.setProperty('--height-query-box', `${height}px`)
+  }
+
+  $scope.$on("angular-resizable.resizing", function (event, args) {
+    if (args.id === 'query-box') {
+      let minHeight = 48
+      let maxHeight = document.getElementById('query-box').parentElement.offsetHeight * .8
+      if (args.height > maxHeight) {
+        args.height = maxHeight
+      }
+      if (args.height < minHeight) {
+        args.height = minHeight
+      }
+      $scope.changeQueryBoxHeight(args.height)
+    }
+  })
 
   $scope.setJsonTheme = (cm, theme) => {
     let cssId = `theme-${theme}`
@@ -128,19 +149,28 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     ipc.send('show-context-menu', {copy: $scope.codeView.getSelection()})
   }
 
-  $scope.connect = (connection) => {
-    $('.menu-overlay').show()
-    let keySplits = connection.serviceAccount.privateKey.split('\\n')
-    connection.serviceAccount.privateKey = ''
-    keySplits.forEach(function (v, k) {
-      connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
-    })
-    let id = connection.serviceAccount.projectId
-    if (typeof $scope.apps[id] === 'undefined') {
-      $scope.apps[id] = firebase.initializeApp(connection, id)
+  $scope.connect = (connection, openCon) => {
+    $rootScope.rootError = !navigator.onLine
+    try {
+      $scope.menuOverlay = true
+      let keySplits = connection.serviceAccount.privateKey.split('\\n')
+      connection.serviceAccount.privateKey = ''
+      keySplits.forEach(function (v, k) {
+        connection.serviceAccount.privateKey += (k === 0) ? v : '\n' + v
+      })
+      let id = connection.serviceAccount.projectId
+      if (typeof $scope.apps[id] === 'undefined') {
+        $scope.apps[id] = firebase.initializeApp(connection, id)
+      }
+      $scope.currentApp = $scope.apps[id]
+      $scope.update()
+      dataBin.setData('openCon', openCon)
+    } catch (err) {
+      $scope.menuOverlay = false
+      $scope.menuHidden = true
+      $rootScope.rootError = true
+      $scope.errorMessage = `Failed to connect ${connection.databaseURL}.`
     }
-    $scope.currentApp = $scope.apps[id]
-    $scope.update()
   }
 
   $scope.update = () => {
@@ -158,19 +188,28 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
       })
       $timeout(() => {
         $scope.collections = tempCols
+        $scope.menuOverlay = false
         $scope.menuHidden = false
       }, 0)
-      $('.menu-overlay').hide()
       $scope.changeQuery()
     }, function (err) {
       $scope.result = 'The read failed: ' + err.code
     })
   }
 
-  if ($rootScope.config) {
-    $scope.connect($rootScope.config.connections[0])
+  if (navigator.onLine && $rootScope.config && $rootScope.config.connections.length > 0) {
+    let openCon = dataBin.getData('openCon')
+    if (openCon === null) {
+      openCon = 0
+    }
+    if ($rootScope.config.connections[openCon]) {
+      $scope.connect($rootScope.config.connections[openCon], openCon)
+    }
   } else {
-    $('.menu-overlay').hide()
+    $scope.menuOverlay = false
+    $scope.menuHidden = true
+    $rootScope.rootError = true
+    $scope.errorMessage = 'No connection yet!'
   }
 
   $scope.create = () => ipc.send('open-create-window')

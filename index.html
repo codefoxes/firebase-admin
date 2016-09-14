@@ -25,7 +25,7 @@
 				<img class="logo" src="img/logo.svg">
 				<span>&#9660;</span>
 			</div>
-			<div class="icon" ng-click="create()" title="Create Connection">
+			<div class="icon" id="create" ng-click="create()" title="Create Connection">
 				<img class="add" src="img/add.svg">
 				<span>&#9660;</span>
 			</div>
@@ -46,10 +46,11 @@
 		</div>
 		<div class="connection-list" ng-show="listShown" ng-click="listShown = false;">
 			<ul>
-				<li ng-repeat="con in config.connections" ng-click="connect(con)">
+				<li ng-repeat="con in config.connections" ng-click="connect(con, $index)" ng-class="{'last': $last}">
 					<div class="name">{{con.serviceAccount.projectId}}</div>
 					<div class="close" ng-click="delete(con)" title="Delete Connection"></div>
 				</li>
+				<li ng-click="create()" class="create-item"><div class="name">Create Connection</div></li>
 			</ul>
 		</div>
 	</div>
@@ -62,7 +63,7 @@
 				<li class="menu-item" ng-repeat="collection in collections | filter:m.searchMenu track by $index" ng-include="'templates/menuTree.html'" ng-class="[collection.open ? 'open': 'closed', {'active': activeUrl == collection.url, 'leaf': collection.leaf}]"></li>
 			</ul>
 		</aside>
-		<div class="menu-overlay" ng-show="online"><div class="loader"></div></div>
+		<div class="menu-overlay" ng-show="menuOverlay"><div class="loader"></div></div>
 	</div>
 	<div class="admin-content">
 		<main id="main" ng-view></main>
