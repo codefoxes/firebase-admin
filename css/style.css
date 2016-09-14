@@ -164,6 +164,7 @@ body, html, main, section.content{
 #mainmenu .icons{
   padding: 6px;
   height: 35px;
+  position: relative;
 }
 
 #mainmenu .icon{
@@ -194,6 +195,31 @@ body, html, main, section.content{
   line-height: 2;
 }
 
+#mainmenu .mode-icons{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#mainmenu .mode-icons .icon{
+  margin: 0;
+  float: left;
+  line-height: 1.4;
+  font-size: 12px;
+  width: auto;
+  border-radius: 0;
+  padding: 3px 10px;
+}
+#mainmenu .mode-icons .icon:first-child{
+  border-radius: 3px 0 0 3px;
+}
+#mainmenu .mode-icons .icon:last-child{
+  border-radius: 0 3px 3px 0;
+}
+#mainmenu .mode-icons .icon.active{
+  background: var(--color-sec-bg);
+}
+
 .connection-list{
   z-index: 1900;
   position: fixed;
@@ -208,7 +234,7 @@ body, html, main, section.content{
   top: calc(var(--chrome-height) - 2px);
   left: 10px;
   min-width: 180px;
-  background: rgba(255,255,255,0.99);
+  background: var(--color-sec-bg);
   padding: 6px 0;
   border-radius: 4px;
   border: 1px solid #b8b8b8;
@@ -839,6 +865,7 @@ hr {
 }
 
 #query{
+  display: inline-block;
   width: calc(100% - 85px);
   min-height: 32px;
   height: 100%;
