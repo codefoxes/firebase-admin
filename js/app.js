@@ -154,7 +154,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
           name: childSnapshot.key,
           url: childSnapshot.key,
           leaf: !childSnapshot.hasChildren()
-        })        
+        })
       })
       $timeout(() => {
         $scope.collections = tempCols
