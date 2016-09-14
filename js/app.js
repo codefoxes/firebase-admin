@@ -68,6 +68,20 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     $scope.menuHidden = $scope.collections.length <= 0
   }, 10000)
 
+  $scope.changeQueryBoxHeight = (height) => {
+    document.documentElement.style.setProperty('--height-query-box', `${height}px`)
+  }
+
+  $scope.$on("angular-resizable.resizing", function (event, args) {
+    if (args.id === 'query-box') {
+      let maxHeight = document.getElementById('query-box').parentElement.offsetHeight * .8
+      if (args.height > maxHeight) {
+        args.height = maxHeight
+      }
+      $scope.changeQueryBoxHeight(args.height)
+    }
+  })
+
   $scope.setJsonTheme = (cm, theme) => {
     let cssId = `theme-${theme}`
     if (!document.getElementById(cssId)) {

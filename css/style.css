@@ -39,6 +39,7 @@
 	--color-accent:   black; /* Fallback */
 
   --chrome-height:  58px;
+  --height-query-box: 48px;
 }
 
 * {
@@ -117,6 +118,7 @@ body, html, main, section.content{
   position: relative;
   margin: 0;
   padding: 0;
+  background: var(--color-sec-bg);
 }
 
 .content.offline{
@@ -597,7 +599,7 @@ pre > code {
 }
 
 .result-wrap{
-  height: calc(100% - 48px);
+  height: calc(100% - var(--height-query-box));
   padding-bottom: 10px;
   position: relative;
   background: var(--color-sec-bg);
@@ -639,7 +641,7 @@ pre > code {
   word-wrap: break-word;
   white-space: pre-wrap;
 }
-.result-wrap .code{
+.result-wrap .result-view{
   height: calc(100% - 17px);
 }
 .result-wrap .copy-wrap{
@@ -821,8 +823,9 @@ hr {
 .query-box{
   padding: 8px 8px;
   margin-bottom: 0;
-  height: 48px;
+  height: var(--height-query-box);
   min-height: 48px;
+  max-height: 80%;
   background: var(--color-sec-bg);
 }
 .query-box button{
