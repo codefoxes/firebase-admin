@@ -1,4 +1,4 @@
-<section ng-show="online" class="container content">
+<section ng-hide="rootError" class="container content">
 	<form id="query-box" class="query-box" resizable r-directions="['bottom']">
 		<textarea id="query" placeholder="Query" ng-model="query"></textarea>
 		<button type="submit" class="button" ng-click="run()">Run</button>
@@ -31,9 +31,11 @@
 		</div>
 	</div>
 </section>
-<section ng-hide="online" class="content offline">
+<section ng-show="rootError" class="content offline">
 	<div class="offline-wrap">
 		<img class="logo" src="img/logo.svg">
-		<div>Turn on Internet!<br>or<br>Create new connection</div>
+		<div ng-hide="online">Turn on Internet!</div>
+		<div ng-show="online && errorMessage">{{errorMessage}}</div>
+		<div ng-click="create()" style="margin-top:10px;border-top:1px solid #ccc;font-size:14px;line-height:3;cursor:pointer;">Create new connection</div>
 	</div>
 </section>
