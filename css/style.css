@@ -10,36 +10,37 @@
 	--color-strong:  hsl(0,0%,11%);
 	--color-link:    #4db6ac;
 
-  --color-sec:     #858e92;
-  --color-sec-bg:  #fff;
+	--color-sec:     #858e92;
+	--color-sec-bg:  #fff;
 
-  --bg-menu:  #ececec;
+	--bg-menu:  #ececec;
 
-  --overlay-bg:    rgba(190, 190, 190, 0.3);
+	--overlay-bg:    rgba(190, 190, 190, 0.3);
 
 	--color-border:  #b8b8b8;
 	--color-bg:      #fff;
 
-  --bg-button:     #fff;
-  --bg-button-top: #eee;
-  --bg-button-bottom: #ddd;
-  --color-border-button: #ddd #bbb #999;
+	--bg-button:     #fff;
+	--bg-button-top: #eee;
+	--bg-button-bottom: #ddd;
+	--color-border-button: #ddd #bbb #999;
 
-  --bg-button-light-top: #fcfcfc;
-  --bg-button-light-bottom: #f3f3f3;
-  --color-border-button-light: #ddd #ccc #aaa;
+	--bg-button-light-top: #fcfcfc;
+	--bg-button-light-bottom: #f3f3f3;
+	--color-border-button-light: #ddd #ccc #aaa;
 
-  --bg-chrome:     #ddd;
-  --bg-chrome-top: #f0f0f0;
-  --bg-chrome-bottom: #d1d0d1;
+	--bg-chrome:     #ddd;
+	--bg-chrome-top: #f0f0f0;
+	--bg-chrome-bottom: #d1d0d1;
 
 	--color-menu:     #d4d6d7;
 	--color-menu-bg:  #ececec;
 
 	--color-accent:   black; /* Fallback */
 
-  --chrome-height:  58px;
-  --height-query-box: 48px;
+	--chrome-height:  58px;
+	--height-query-box: 48px;
+	--font-main: inherit;
 }
 
 * {
@@ -119,6 +120,10 @@ body, html, main, section.content{
   margin: 0;
   padding: 0;
   background: var(--color-sec-bg);
+}
+
+#adminmenumain, .admin-content{
+  font-family: var(--font-main);
 }
 
 .content.offline{
@@ -209,6 +214,7 @@ body, html, main, section.content{
   width: auto;
   border-radius: 0;
   padding: 3px 10px;
+  border-left: none;
 }
 #mainmenu .mode-icons .icon:first-child{
   border-radius: 3px 0 0 3px;
@@ -303,7 +309,7 @@ body, html, main, section.content{
   color: var(--color-main);
   max-height: 100%;
 }
-#admin-menu::-webkit-scrollbar, .admin-content::-webkit-scrollbar{ 
+#admin-menu::-webkit-scrollbar, .admin-content::-webkit-scrollbar, .result .menu-item div::-webkit-scrollbar{
   display: none; 
 }
 
@@ -677,13 +683,13 @@ pre > code {
   text-align: center;
   width: 42px;
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.5;
 }
 .copy-wrap img{
   width: 14px;
 }
 .copied{
-  color: #fff;
+  color: var(--color-main);
 }
 
 ::-webkit-scrollbar{
@@ -866,12 +872,12 @@ hr {
 
 #query{
   display: inline-block;
-  width: calc(100% - 85px);
+  width: calc(100% - 90px);
   min-height: 32px;
   height: 100%;
-  padding: 5px 10px;
+  /*padding: 5px 10px;*/
   line-height: 1.6;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-main);
   background-color: var(--color-sec-bg);
   border: none;
@@ -1072,6 +1078,12 @@ label{
 }
 .cm-s-default .cm-string.cm-property{
   color: #a11;
+}
+.query-box .cm-s-monokai.CodeMirror{
+  background: initial;
+}
+.query-box .cm-s-monokai span.cm-comment{
+  color: #b5b2a5;
 }
 
 /* Media Queries

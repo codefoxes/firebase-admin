@@ -75,20 +75,6 @@ let template = [{
         focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
       }
     }
-  }, {
-    label: 'Toggle Developer Tools',
-    accelerator: (function () {
-      if (process.platform === 'darwin') {
-        return 'Alt+Command+I'
-      } else {
-        return 'Ctrl+Shift+I'
-      }
-    })(),
-    click: function (item, focusedWindow) {
-      if (focusedWindow) {
-        focusedWindow.toggleDevTools()
-      }
-    }
   }]
 }, {
   label: 'Window',
@@ -118,7 +104,7 @@ let template = [{
   submenu: [{
     label: 'Visit Website',
     click: function () {
-      electron.shell.openExternal('http://docs.codefoxes.com/firebase-admin/')
+      electron.shell.openExternal('https://firebaseadmin.com/')
     }
   }, {
     label: 'Learn More',
@@ -127,6 +113,24 @@ let template = [{
     }
   }]
 }]
+
+if (process.env.mode && process.env.mode === 'dev') {
+  template[2].submenu.push({
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
+  })
+}
 
 if (process.platform === 'darwin') {
   template.unshift({

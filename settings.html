@@ -56,6 +56,10 @@
 					<input type="radio" name="fonts" id="fonts-monospace" ng-model="form.fonts" value="monospace">
 					<label for="fonts-monospace">Monospace</label>
 				</div>
+				<div class="radio">
+					<input type="radio" name="fonts" id="fonts-serif" ng-model="form.fonts" value="serif">
+					<label for="fonts-serif">Serif</label>
+				</div>
 			</section>
 			<div class="saved" ng-class="{'now': saved}">Saved</div>
 			<footer class="toolbar toolbar-footer">
@@ -123,6 +127,7 @@
 	const electron = require('electron').remote
 	const ipc = require('electron').ipcRenderer
 	const writeFile = require('write-file-atomic')
+	require('electron').webFrame.setZoomLevelLimits(1, 1)
 </script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/settings.js"></script>

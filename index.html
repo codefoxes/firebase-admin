@@ -15,6 +15,7 @@
 		const writeFile = require('write-file-atomic')
 		const clipboard = electron.clipboard
 		window.$ = window.jQuery = require('jquery')
+		require('electron').webFrame.setZoomLevelLimits(1, 1)
 	</script>
 </head>
 <body ng-app="fba" ng-controller="mainController" class="{{os}} index">
