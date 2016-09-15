@@ -4,7 +4,7 @@
   "description": "Firebase Management Cross Platform Application",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "mode=dev electron .",
     "test": "mocha tests",
     "build": "node ./build.js"
   },

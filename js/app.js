@@ -47,6 +47,10 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     document.documentElement.style.setProperty('--color-border-button-light', '#3c474c #242d31 #242d31');
     document.documentElement.style.setProperty('--bg-menu', '#3c474c');
   }
+
+  if ($rootScope.settings.fonts !== 'system') {
+    document.documentElement.style.setProperty('--font-main', $rootScope.settings.fonts)
+  }
 })
 
 .controller('mainController', function (dataFactory, dataBin, $rootScope, $scope, $timeout) {
@@ -70,9 +74,13 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.query = ''
   $scope.mode = 'explorer'
 
-  console.oldLog = console.log
+  if (process.env.mode && process.env.mode === 'dev') {
+    console.oldLog = console.log
+  }
   console.log = (...value) => {
-    console.oldLog(value)
+    if (console.oldLog) {
+      console.oldLog(value)
+    }
     if (Array.isArray($scope.$log)) {
       $scope.$log = $scope.$log.concat(value)
     } else {
@@ -125,6 +133,13 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     }
   }
 
+  $scope.queryViewLoaded = (cm) => {
+    $scope.queryView = cm
+    if ($rootScope.settings.theme === 'dark') {
+      $scope.setJsonTheme(cm, 'monokai')
+    }
+  }
+
   $scope.codeOptions = {
     lineWrapping : true,
     lineNumbers: true,
@@ -139,7 +154,7 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   $scope.codeQueryOptions = {
     lineWrapping : true,
     lineNumbers: false,
-    onLoad: (cm) => $scope.queryView = cm,
+    onLoad: $scope.queryViewLoaded,
     mode: 'javascript',
     matchBrackets: true,
     extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}
@@ -389,13 +404,15 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
         $scope.query = $scope.baseURL + $scope.collection.url + '/'
       }
       $scope.queryView.setValue($scope.query)
+      $scope.changeQueryBoxHeight(48)
     } else if ($scope.mode === 'query') {
       if ($scope.collection.url) {
         $scope.query = $scope.collection.url + '/'
       } else {
         $scope.query = ''
       }
-      $scope.queryView.setValue(`firebase().database().ref('/${$scope.query}').on('value', function (snapshot) {console.log(snapshot.val())})`)
+      $scope.queryView.setValue(`firebase().database().ref('/${$scope.query}').on('value', function (snapshot) {\n\tconsole.log(snapshot.val())\n})`)
+      $scope.changeQueryBoxHeight(90)
     }
     $scope.refreshQueryView()
   }

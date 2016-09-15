@@ -50,6 +50,7 @@
 	const electron = require('electron').remote
 	const firebase = require("firebase")
 	const writeFile = require('write-file-atomic')
+	require('electron').webFrame.setZoomLevelLimits(1, 1)
 </script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/connection.js"></script>
