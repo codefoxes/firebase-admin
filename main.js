@@ -83,5 +83,5 @@ ipc.on('show-context-menu', (e, args) => {
 ipc.on('reload-window', () => mainWindow.reload())
 
 ipc.on('open-create-window', function (event) {
-  createWindow('conWin', 'create.html', {parent: mainWindow, width: 600, height: 300})
+  createWindow('conWin', 'create.html', {parent: mainWindow, width: 600, height: 320})
 })

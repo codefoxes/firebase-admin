@@ -9,7 +9,7 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
   }
 })
 
-.controller('connectionController', function ($scope, $rootScope) {
+.controller('connectionController', function ($scope, $rootScope, $timeout) {
   $scope.projectID = ''
   $scope.privateKey = ''
   $scope.clientEmail = ''
@@ -38,6 +38,7 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
     }
     try {
       writeFile.sync(userPath + '/fba-config.json', angular.toJson($rootScope.config, 4), {mode: parseInt('0600', 8)})
+      ipc.send('reload-window')
       window.close()
     } catch (err) {
       if (err.code === 'EACCES') {
@@ -46,6 +47,29 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
       throw err
     }
   }
+
+  $scope.import = (elem) => {
+    if(elem.files.length > 0) {
+      const fs = require('graceful-fs')
+      let tempconfig = null
+      tempconfig = fs.readFileSync(elem.files[0].path, 'utf8')
+      tempconfig = JSON.parse(tempconfig)
+      $timeout(() => {
+        if (tempconfig.project_id) {
+          $scope.projectID = tempconfig.project_id
+          $scope.databaseURL = `https://${tempconfig.project_id}.firebaseio.com`
+        }
+        if (tempconfig.private_key) {
+          $scope.privateKey = tempconfig.private_key
+        }
+        if (tempconfig.client_email) {
+          $scope.clientEmail = tempconfig.client_email
+        }
+      })
+    }
+  }
+
+  $scope.goDocs = () => electron.shell.openExternal('http://docs.codefoxes.com/firebase-admin/')
 
   $scope.close = () => window.close()
 })
