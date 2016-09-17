@@ -9,6 +9,15 @@
 </head>
 <body ng-app="fba-c" ng-controller="connectionController" class="{{os}} create">
 	<form class="form" ng-submit="save()" name="add">
+		<div class="form-group helpers">
+			<div class="columns-10 offset-2-columns">
+				<span class="importer">
+					<button class="button button-light">Import</button>
+					<input type="file" id="file" name="file" onchange="angular.element(this).scope().import(this)" />
+				</span>
+				<button class="button button-plain pull-right" ng-click="goDocs()">Help</button>
+			</div>
+		</div>
 		<div class="form-group">
 			<label for="projectID" class="columns-2 control-label">Project ID:</label>
 			<div class="columns-10">
@@ -18,7 +27,7 @@
 		<div class="form-group">
 			<label for="privateKey" class="columns-2 control-label">Private Key:</label>
 			<div class="columns-10">
-				<input type="text" class="form-control" id="privateKey" placeholder="-----BEGIN PRIVATE KEY----- your key -----END PRIVATE KEY-----\n" ng-model="privateKey" required>
+				<textarea class="form-control" id="privateKey" placeholder="-----BEGIN PRIVATE KEY----- your key -----END PRIVATE KEY-----\n" ng-model="privateKey" required></textarea>
 			</div>
 		</div>
 		<div class="form-group">
@@ -45,9 +54,29 @@
 	body{
 		border-top: 1px solid var(--color-border);
 	}
+	textarea{
+		min-height: 50px;
+		resize: none;
+	}
+	.importer button{
+		position: absolute;
+	}
+	#file{
+		min-height: 30px;
+		opacity: 0; 
+	}
+	.form-group.helpers {
+		margin: -5px 0 5px;
+	}
+	.button-plain{
+		background: none;
+		box-shadow: none;
+		border: 1px solid #ddd;
+	}
 </style>
 <script>
 	const electron = require('electron').remote
+	const ipc = require('electron').ipcRenderer
 	const firebase = require("firebase")
 	const writeFile = require('write-file-atomic')
 	require('electron').webFrame.setZoomLevelLimits(1, 1)

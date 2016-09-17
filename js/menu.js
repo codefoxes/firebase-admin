@@ -111,6 +111,11 @@ let template = [{
     click: function () {
       electron.shell.openExternal('http://docs.codefoxes.com/firebase-admin/')
     }
+  }, {
+    label: 'Check for update',
+    click: function () {
+      electron.shell.openExternal(`https://firebaseadmin.com/update.php?v=${electron.app.getVersion()}`)
+    }
   }]
 }]
 
@@ -150,6 +155,11 @@ if (process.platform === 'darwin') {
         if (focusedWindow.createWindow) {
           focusedWindow.createWindow('setWin', 'settings.html', {parent: focusedWindow, width: 600, height: 400})
         }
+      }
+    }, {
+      label: 'Check for update',
+      click: function () {
+        electron.shell.openExternal(`https://firebaseadmin.com/update.php?v=${electron.app.getVersion()}`)
       }
     }, {
       type: 'separator'
