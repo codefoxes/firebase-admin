@@ -1,26 +1,28 @@
 # Welcome to Firebase Admin
 
 [![Build Status](https://travis-ci.org/codefoxes/firebase-admin.svg?branch=master)](https://travis-ci.org/codefoxes/firebase-admin)
+[![Total Downloads](https://firebaseadmin.com/download-count.svg)](https://firebaseadmin.com/#download)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![Latest Stable Version](https://firebaseadmin.com/current-version.svg)](https://firebaseadmin.com/changelog.html)
+[![License](https://firebaseadmin.com/license.svg)](blob/master/license.md)
 
 Firebase Admin is Firebase Management tool. Unlike Google's default console Firebase Admin enables all the queries to be executed right from the tool.
-
-## Current Version
-1.0.0
 
 ## Download
 You can download tested install packages for OS X, Windows and Linux from following links:
 
-Links coming Sooon...
+[Windows](https://firebaseadmin.com/download.php?os=windows) | [Mac](https://firebaseadmin.com/download.php?os=mac) | [Linux](https://firebaseadmin.com/download.php?os=linux)
+
 
 ## Support
 Firebase Admin is an open source project driven by volunteers. We will try answer every questions. But please be patient.
 
 You can [create a new issue in the Github issue queue](issues)
 ## Roadmap
-- Write Query in JS as well as CURL
-- Live CRUD Operations
+- In place edit
+- Language selection
 - File Upload
+- User Management
 
 Not seeing what you want? Please [create an issue](issues)
 ## Build
@@ -47,3 +49,8 @@ For a general workflow, see Github's guide to [Fork a Repo](https://help.github.
 Pull requests (PRs) should generally be for discrete issues (i.e. one issue per PR please) and be clean to merge against the current master branch. It would also be helpful if you can confirm what testing has been done (specific O/S targets if applicable).
 
 A usual naming approach for feature branches is `issue-###`. Include the issue number in your commit message / pull request description to link the PR to the original issue.
+
+## Other
+ - [Visit Website](https://firebaseadmin.com/)
+ - [Docs](http://docs.codefoxes.com/firebase-admin/)
+ - [Changelog](https://firebaseadmin.com/changelog.html)
