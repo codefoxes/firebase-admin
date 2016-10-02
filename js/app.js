@@ -1,4 +1,5 @@
 var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']).run(function ($http, dataFactory, $rootScope) {
+  $rootScope.showNotice = false
   $rootScope.userPath = electron.app.getPath('userData')
   const fs = require('graceful-fs')
   $rootScope.rootError = false
@@ -33,19 +34,19 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   }
 
   if ($rootScope.settings.theme === 'dark') {
-    document.documentElement.style.setProperty('--color-main', '#fff');
-    document.documentElement.style.setProperty('--color-sec', '#ccc');
-    document.documentElement.style.setProperty('--color-sec-bg', '#3c474c');
-    document.documentElement.style.setProperty('--bg-button-top', '#556167');
-    document.documentElement.style.setProperty('--bg-button-bottom', '#3c474c');
-    document.documentElement.style.setProperty('--color-border-button', '#3c474c #242d31 #242d31');
-    document.documentElement.style.setProperty('--bg-chrome-top', '#556167');
-    document.documentElement.style.setProperty('--bg-chrome-bottom', '#3c474c');
-    document.documentElement.style.setProperty('--color-border-chrome', '#3c474c #242d31 #242d31');
-    document.documentElement.style.setProperty('--bg-button-light-top', '#556167');
-    document.documentElement.style.setProperty('--bg-button-light-bottom', '#3c474c');
-    document.documentElement.style.setProperty('--color-border-button-light', '#3c474c #242d31 #242d31');
-    document.documentElement.style.setProperty('--bg-menu', '#3c474c');
+    document.documentElement.style.setProperty('--color-main', '#fff')
+    document.documentElement.style.setProperty('--color-sec', '#ccc')
+    document.documentElement.style.setProperty('--color-sec-bg', '#3c474c')
+    document.documentElement.style.setProperty('--bg-button-top', '#556167')
+    document.documentElement.style.setProperty('--bg-button-bottom', '#3c474c')
+    document.documentElement.style.setProperty('--color-border-button', '#3c474c #242d31 #242d31')
+    document.documentElement.style.setProperty('--bg-chrome-top', '#556167')
+    document.documentElement.style.setProperty('--bg-chrome-bottom', '#3c474c')
+    document.documentElement.style.setProperty('--color-border-chrome', '#3c474c #242d31 #242d31')
+    document.documentElement.style.setProperty('--bg-button-light-top', '#556167')
+    document.documentElement.style.setProperty('--bg-button-light-bottom', '#3c474c')
+    document.documentElement.style.setProperty('--color-border-button-light', '#3c474c #242d31 #242d31')
+    document.documentElement.style.setProperty('--bg-menu', '#3c474c')
   }
 
   if ($rootScope.settings.fonts !== 'system') {
@@ -544,6 +545,17 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
   }
 })
 
+.directive('compile', ['$compile', function ($compile) {
+  return (scope, element, attrs) => {
+    scope.$watch(scope => scope.$eval(attrs.compile),
+      value => {
+        element.html(value)
+        $compile(element.contents())(scope)
+      }
+    )
+  }
+}])
+
 .service('dataBin', function () {
   return {
     getData: function (key) {
@@ -554,6 +566,15 @@ var fba = angular.module('fba', ['ngRoute', 'angularResizable', 'ui.codemirror']
     },
     delData: function (key) {
       localStorage.removeItem(key)
+    }
+  }
+})
+
+.service('notice', ($rootScope) => {
+  return {
+    show: (message) => {
+      $rootScope.showNotice = true
+      $rootScope.noticeMessage = message
     }
   }
 })

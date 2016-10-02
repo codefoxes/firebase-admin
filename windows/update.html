@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<base href="local">
+	<title>Update Firebase Admin</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+<body ng-app="fba-u" ng-controller="updateController" class="{{os}} update">
+	<div class="message" ng-class="{'middle': !update}">{{message}} <span ng-show="update">: v {{version}}</span></div>
+	<div ng-show="changes" class="changes">
+		<div class="changes-title">Major Changes:</div>
+		<ol>
+			<li ng-repeat="change in changes track by $index">{{change}}</li>
+		</ol>
+	</div>
+	<!--<div class="selector">
+		Download update to
+		<select name="destination" id="destination" ng-model="destination">
+			<option value="desktop">Desktop</option>
+			<option value="downloads">Downloads</option>
+			<option value="home">Home</option>
+			<option value="documents">Documents</option>
+		</select>
+		folder.
+	</div>-->
+	<div class="selector" ng-show="update" ng-click="download()"><div class="download button selector">Download Now</div></div>
+	<footer class="toolbar toolbar-footer">
+		<div class="toolbar-actions">
+			<button class="button button-primary pull-right" ng-click="download()" ng-disabled="!update">Download</button>
+			<button class="button button-light" ng-click="close()">Cancel</button>
+		</div>
+	</footer>
+</body>
+<style type="text/css">
+	body{
+		border-top: 1px solid var(--color-border);
+		padding: 10px 20px;
+	}
+	.message{
+		font-size: 18px;
+		text-align: center;
+	}
+	.changes{
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		margin-top: 10px;
+	}
+	.changes-title{
+		background: #eee;
+		border-bottom: 1px solid #ccc;
+		padding: 2px 8px;
+	}
+	ol{
+		font-size: 12px;
+		max-height: 100px;
+		overflow: auto;
+	}
+	li{
+		border-bottom: 1px solid #eee;
+		padding: 2px 8px;
+	}
+	.selector{
+		margin-top: 10px;
+		text-align: center;
+		font-size: 13px;
+		color: #666;
+	}
+	select{
+		display: inline-block;
+		width: inherit;
+		height: 20px;
+		margin: 0 4px;
+	}
+	.download{
+		color: #fff;
+		background: #47a747;
+		border-color: #47a747;
+	}
+	.middle{
+		padding-top: 100px;
+	}
+</style>
+<script>
+	const electron = require('electron').remote
+	require('electron').webFrame.setZoomLevelLimits(1, 1)
+</script>
+<script type="text/javascript" src="../js/angular.min.js"></script>
+<script type="text/javascript" src="../js/update.js"></script>
+</html>

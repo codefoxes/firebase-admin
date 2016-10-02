@@ -113,8 +113,10 @@ let template = [{
     }
   }, {
     label: 'Check for update',
-    click: function () {
-      electron.shell.openExternal(`https://firebaseadmin.com/update.php?v=${electron.app.getVersion()}`)
+    click: (item, focusedWindow) => {
+      if (focusedWindow.checkUpdate) {
+        focusedWindow.checkUpdate(true)
+      }
     }
   }]
 }]
@@ -158,8 +160,10 @@ if (process.platform === 'darwin') {
       }
     }, {
       label: 'Check for update',
-      click: function () {
-        electron.shell.openExternal(`https://firebaseadmin.com/update.php?v=${electron.app.getVersion()}`)
+      click: (item, focusedWindow) => {
+        if (focusedWindow.checkUpdate) {
+          focusedWindow.checkUpdate(true)
+        }
       }
     }, {
       type: 'separator'

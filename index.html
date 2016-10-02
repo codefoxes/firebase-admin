@@ -14,7 +14,7 @@
 		const firebase = require("firebase")
 		const writeFile = require('write-file-atomic')
 		const clipboard = electron.clipboard
-		window.$ = window.jQuery = require('jquery')
+		//window.$ = window.jQuery = require('jquery')
 		require('electron').webFrame.setZoomLevelLimits(1, 1)
 	</script>
 </head>
@@ -68,8 +68,8 @@
 	<div class="admin-content">
 		<main id="main" ng-view></main>
 	</div>
+	<div id="notice" ng-show="showNotice" ng-include="'templates/notice.html'"></div>
 </body>
-<script type="text/javascript" src="js/jquery.gritter.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-route.min.js"></script>
 <script type="text/javascript" src="js/angular-resizable.min.js"></script>
