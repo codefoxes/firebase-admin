@@ -127,7 +127,8 @@ body, html, main, section.content{
 }
 
 .content.offline{
-  background: #eee;
+  color: var(--color-sec);
+  background: var(--color-sec-bg);
   font-size: 20px;
   font-weight: 600;
 }
@@ -295,6 +296,7 @@ body, html, main, section.content{
 #adminmenumain.hidden{
   max-width: 0;
   min-width: 0;
+  margin-left: -1px;
 }
 .hidden .menu-overlay{
   display: none;
@@ -549,7 +551,9 @@ textarea {
   width: 100%;
   min-height: 100px;
   padding-top: 6px;
-  padding-bottom: 6px; }
+  padding-bottom: 6px;
+  vertical-align: top;
+}
 input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,

@@ -14,18 +14,16 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
   $scope.privateKey = ''
   $scope.clientEmail = ''
   $scope.databaseURL = ''
+  $scope.apps = []
+  $scope.message = ''
+  $scope.error = false
+  $scope.testing = false
+  const userPath = electron.app.getPath('userData')
+  let longTimer, tooLongTimer
 
-  $scope.save = function () {
-    const userPath = electron.app.getPath('userData')
+  $scope.saveConnection = (connection) => {
+    $timeout.cancel( longTimer )
     let updated = false
-    let connection = {
-      serviceAccount: {
-        projectId: $scope.projectID,
-        privateKey: $scope.privateKey,
-        clientEmail: $scope.clientEmail
-      },
-      databaseURL: $scope.databaseURL
-    }
     for (var i = 0; i < $rootScope.config.connections.length; i++) {
       if ($rootScope.config.connections[i].serviceAccount.projectId == $scope.projectID) {
         $rootScope.config.connections[i] = connection
@@ -48,6 +46,43 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
     }
   }
 
+  $scope.save = function () {
+    let message = `We could not connect to firebase with the service account credentials you provided.\n\nFirebase admin will not connect to firebase on this connection. Still want to save?`
+    $scope.testing = true
+    let connection = {
+      serviceAccount: {
+        projectId: $scope.projectID,
+        privateKey: $scope.privateKey,
+        clientEmail: $scope.clientEmail
+      },
+      databaseURL: $scope.databaseURL
+    }
+    let id = $scope.projectID
+    if (typeof $scope.apps[id] === 'undefined') {
+      $scope.apps[id] = firebase.initializeApp(connection, id)
+    }
+    $scope.currentApp = $scope.apps[id]
+
+    $scope.testConnection().then(() => {
+      $scope.saveConnection(connection)
+      $scope.saving = true
+    }).catch(() => {
+      if (!$scope.saving && window.confirm(message)) {
+        $scope.saveConnection(connection)
+        $scope.saving = true
+      }
+      $scope.testing = false
+    })
+
+    longTimer = $timeout(() => {
+      if (!$scope.saving && window.confirm(message)) {
+        $scope.saveConnection(connection)
+        $scope.saving = true
+      }
+      $scope.testing = false
+    }, 10000)
+  }
+
   $scope.import = (elem) => {
     if(elem.files.length > 0) {
       const fs = require('graceful-fs')
@@ -66,6 +101,98 @@ var fbaC = angular.module('fba-c', []).run(function ($rootScope) {
           $scope.clientEmail = tempconfig.client_email
         }
       })
+    }
+  }
+
+  $scope.testConnection = () => {
+    return new Promise((resolve, reject) => {
+      $scope.currentApp.database().ref('/').once('value', (snapshot) => {
+        resolve('Connection success.')
+      }, () => {
+        reject('Could not connect to firebase.')
+      })
+    })
+  }
+
+  $scope.showTestMessage = () => {
+    $timeout.cancel( longTimer )
+    $timeout.cancel( tooLongTimer )
+    $scope.testConnection().then((msg) => {
+      $timeout(() => {
+        $scope.message = `${msg} Click "Create" to save.`
+        $scope.testing = false
+      })
+    }).catch((err) => {
+      $timeout(() => {
+        $scope.message = 'Could not connect to firebase. Please check details.'
+        $scope.error = true
+        $scope.testing = false
+      })
+    })
+
+    longTimer = $timeout(() => {
+      if ($scope.testing) {
+        $scope.message = 'Test taking longer than usual. Please check details.'
+        $scope.error = true
+      }
+    }, 10000)
+
+    tooLongTimer = $timeout(() => {
+      if ($scope.testing) {
+        $scope.message = 'Could not connect to firebase. Please check details.'
+        $scope.error = true
+        $scope.testing = false
+      }
+    }, 30000)
+  }
+
+  $scope.test = () => {
+    // Validate fields.
+    if (!$scope.projectID) {
+      $scope.message = 'Please enter valid Project ID'
+      $scope.error = true
+      return
+    }
+    if (!$scope.privateKey || !$scope.privateKey.includes('BEGIN')) {
+      $scope.message = 'Please enter valid Private Key'
+      $scope.error = true
+      return
+    }
+    if (!$scope.clientEmail || !$scope.clientEmail.includes('gserviceaccount.com')) {
+      $scope.message = 'Please enter valid Client Email'
+      $scope.error = true
+      return
+    }
+    if (!$scope.databaseURL || !$scope.databaseURL.includes('firebaseio.com')) {
+      $scope.message = 'Please enter valid Database URL'
+      $scope.error = true
+      return
+    }
+
+    $scope.message = ''
+    $scope.error = false
+
+    // Details seems normal. Test connection.
+    $scope.testing = true
+    let connection = {
+      serviceAccount: {
+        projectId: $scope.projectID,
+        privateKey: $scope.privateKey,
+        clientEmail: $scope.clientEmail
+      },
+      databaseURL: $scope.databaseURL
+    }
+    let id = $scope.projectID
+    if (typeof $scope.apps[id] !== 'undefined') {
+      $scope.apps[id].delete().then(() => {
+        $scope.apps[id] = firebase.initializeApp(connection, id)
+        $scope.currentApp = $scope.apps[id]
+        $scope.showTestMessage()
+      })
+    } else {
+      $scope.apps[id] = firebase.initializeApp(connection, id)
+      $scope.currentApp = $scope.apps[id]
+      $scope.showTestMessage()
     }
   }
 

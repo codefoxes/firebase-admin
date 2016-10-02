@@ -45,7 +45,10 @@
 		<footer class="toolbar toolbar-footer">
 			<div class="toolbar-actions">
 				<button class="button button-primary pull-right" ng-disabled="add.$invalid">Create</button>
-				<button class="button button-light" ng-click="close()">Cancel</button>
+				<a class="button button-light pull-right test" ng-click="test()">Test</a>
+				<div class="loader-wrap pull-right" ng-show="testing"><div class="loader"></div></div>
+				<span class="pull-right message" ng-show="message" ng-class="{'error': error}">{{message}}</span>
+				<a class="button button-light" ng-click="close()">Cancel</a>
 			</div>
 		</footer>
 	</form>
@@ -72,6 +75,22 @@
 		background: none;
 		box-shadow: none;
 		border: 1px solid #ddd;
+	}
+	.button.test, .message{
+		margin-right: 10px;
+	}
+	.message{
+		color: #359c22;
+		font-size: 13px;
+	}
+	.error{
+		color: red;
+	}
+	.loader-wrap{
+		position: relative;
+		margin-right: 50px;
+		margin-top: 20px;
+		zoom: .6;
 	}
 </style>
 <script>

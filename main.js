@@ -98,7 +98,7 @@ ipc.on('open-create-window', function (event) {
 function checkUpdate(open) {
   https.get({
     hostname: websiteUrl,
-    path: `/update.php?v=0.0.9&s=${electron.app.getVersion()}`,
+    path: `/update.php?v=${electron.app.getVersion()}`,
     headers: { 'response-format': 'json' }
   }, (res) => {
     res.setEncoding('utf8');
