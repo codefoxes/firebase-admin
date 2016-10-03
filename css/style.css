@@ -127,7 +127,8 @@ body, html, main, section.content{
 }
 
 .content.offline{
-  background: #eee;
+  color: var(--color-sec);
+  background: var(--color-sec-bg);
   font-size: 20px;
   font-weight: 600;
 }
@@ -295,6 +296,7 @@ body, html, main, section.content{
 #adminmenumain.hidden{
   max-width: 0;
   min-width: 0;
+  margin-left: -1px;
 }
 .hidden .menu-overlay{
   display: none;
@@ -549,7 +551,9 @@ textarea {
   width: 100%;
   min-height: 100px;
   padding-top: 6px;
-  padding-bottom: 6px; }
+  padding-bottom: 6px;
+  vertical-align: top;
+}
 input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,
@@ -917,6 +921,39 @@ label{
   bottom: 0;
   background: var(--bg-menu);
   z-index: 1200;
+}
+
+#notice{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+}
+.notice-window{
+  position: absolute;
+  width: 400px;
+  padding: 10px 20px;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%);
+  color: var(--color-main);
+  background: var(--color-sec-bg);
+}
+.close-btn{
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 18px;
+  cursor: pointer;
+  background: #ce2a2a;
 }
 
 .toolbar{

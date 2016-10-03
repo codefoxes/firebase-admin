@@ -3,6 +3,8 @@ const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
 const ipc = electron.ipcMain
+const https = require('https')
+let websiteUrl = 'firebaseadmin.com'
 
 let template = require('./js/menu')
 if (process.mas) app.setName('Firebase Admin')
@@ -29,6 +31,12 @@ function createMainWindow () {
 
   mainWindow.createWindow = (name, file, options) => createWindow(name, file, options)
 
+  mainWindow.webContents.once("did-frame-finish-load", () => {
+    checkUpdate(false)
+  })
+
+  mainWindow.checkUpdate = (open) => checkUpdate(open)
+
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
@@ -39,6 +47,7 @@ function createWindow(name, file, options) {
     subWindows[name].on('closed', () => { subWindows[name] = null })
     subWindows[name].loadURL(`file://${__dirname}/${file}`)
     subWindows[name].setMenu(null)
+    subWindows[name].checkUpdate = (open) => checkUpdate(open)
   }
 }
 
@@ -85,3 +94,20 @@ ipc.on('reload-window', () => mainWindow.reload())
 ipc.on('open-create-window', function (event) {
   createWindow('conWin', 'create.html', {parent: mainWindow, width: 600, height: 320})
 })
+
+function checkUpdate(open) {
+  https.get({
+    hostname: websiteUrl,
+    path: `/update.php?v=${electron.app.getVersion()}`,
+    headers: { 'response-format': 'json' }
+  }, (res) => {
+    res.setEncoding('utf8');
+    res.on('data', function (data) {
+      data = JSON.parse(data)
+      if (data.update || open) {
+        createWindow('updateWin', 'windows/update.html', {parent: mainWindow, width: 600, height: 320, resizable: false})
+        subWindows.updateWin.updateData = data
+      }
+    })
+  })
+}
