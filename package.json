@@ -1,6 +1,6 @@
 {
   "name": "firebase-admin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Firebase Management Cross Platform Application",
   "main": "main.js",
   "scripts": {
