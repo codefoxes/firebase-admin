@@ -110,7 +110,7 @@
 		<img class="logo" src="img/logo.svg">
 		<div style="padding-top: 20px;">Firebase Admin</div>
 		<div class="detail">
-			Version: 1.0.0<br>
+			Version: <span id="version-number"></span><br>
 			Credits: Karthik Bhat, Koushik Bhushan
 		</div>
 		<div class="footer">Made with love in India</div>
@@ -122,6 +122,7 @@
 			window.close()
 		}
 		require('electron').webFrame.setZoomLevelLimits(1, 1)
+		document.getElementById('version-number').innerHTML = require('electron').remote.app.getVersion()
 	</script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 [![Total Downloads](https://firebaseadmin.com/download-count.svg)](https://firebaseadmin.com/#download)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Latest Stable Version](https://firebaseadmin.com/current-version.svg)](https://firebaseadmin.com/changelog.html)
-[![License](https://firebaseadmin.com/license.svg)](blob/master/license.md)
+[![License](https://firebaseadmin.com/license.svg)](license.md)
 
 Firebase Admin is Firebase Management tool. Unlike Google's default console Firebase Admin enables all the queries to be executed right from the tool.
 
@@ -17,14 +17,14 @@ You can download tested install packages for OS X, Windows and Linux from follow
 ## Support
 Firebase Admin is an open source project driven by volunteers. We will try answer every questions. But please be patient.
 
-You can [create a new issue in the Github issue queue](issues)
+You can [create a new issue in the Github issue queue](../../issues)
 ## Roadmap
 - In place edit
 - Language selection
 - File Upload
 - User Management
 
-Not seeing what you want? Please [create an issue](issues)
+Not seeing what you want? Please [create an issue](../../issues)
 ## Build
 Wiki coming soon.
 ## Installation
