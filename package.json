@@ -73,6 +73,10 @@
           "type": "file"
         }
       ]
+    },
+    "linux": {
+      "target": "deb",
+      "maintainer": "dev@codefoxes.com"
     }
   }
 }
