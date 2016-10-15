@@ -7,6 +7,7 @@ const https = require('https')
 let websiteUrl = 'firebaseadmin.com'
 
 let template = require('./js/menu')
+if (process.platform === 'win32') require('./squirrel')
 if (process.mas) app.setName('Firebase Admin')
 
 // Keep a global reference of the window object, if you don't, the window will
