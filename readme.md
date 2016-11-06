@@ -1,7 +1,6 @@
 # Welcome to Firebase Admin
 
 [![Build Status](https://travis-ci.org/codefoxes/firebase-admin.svg?branch=master)](https://travis-ci.org/codefoxes/firebase-admin)
-[![Total Downloads](https://firebaseadmin.com/download-count.svg)](https://firebaseadmin.com/#download)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Latest Stable Version](https://firebaseadmin.com/current-version.svg)](https://firebaseadmin.com/changelog.html)
 [![License](https://firebaseadmin.com/license.svg)](license.md)
